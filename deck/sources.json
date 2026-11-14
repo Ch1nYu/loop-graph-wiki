@@ -1,0 +1,37 @@
+{
+  "S1": {
+    "label": "Week 10 課程筆記",
+    "wiki": "sources/week10-lecture",
+    "url": "https://www.youtube.com/live/pEmuTl9vTf8"
+  },
+  "S2": {
+    "label": "Agentic workflow / HumanEval",
+    "wiki": "sources/agentic-workflow-humaneval",
+    "url": "https://x.com/N01ennn/status/2097264706088014123"
+  },
+  "S3": {
+    "label": "Anthropic: Building Effective AI Agents",
+    "wiki": "sources/building-effective-ai-agents",
+    "url": "https://www.anthropic.com/engineering/building-effective-agents"
+  },
+  "S4": {
+    "label": "LangGraph Agent 課程",
+    "wiki": "sources/langgraph-agents-course",
+    "url": "https://x.com/AnatoliKopadze/status/2088684163167670725"
+  },
+  "S5": {
+    "label": "Agentic Harness (Kimi K3)",
+    "wiki": "sources/agentic-harness-kimi-k3",
+    "url": "https://x.com/Av1dlive/status/2085405823782842835"
+  },
+  "S6": {
+    "label": "自我改進編碼迴圈",
+    "wiki": "sources/self-improving-coding-loop",
+    "url": "https://x.com/cyrilXBT/status/2088542962854629672"
+  },
+  "S7": {
+    "label": "AI Agent 系統設計課",
+    "wiki": "sources/ai-agent-system-design-course",
+    "url": "https://x.com/LunarResearcher/status/2084984207495827776"
+  }
+}

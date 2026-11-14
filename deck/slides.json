@@ -1,0 +1,256 @@
+{
+  "meta": {
+    "title": "把工作拆成 AI 能做的流程",
+    "subtitle": "Loop / Graph Engineering 入門",
+    "lang": "zh-Hant",
+    "version": "1.0",
+    "date": "2026-11-13",
+    "repo": "https://github.com/Ch1nYu/loop-graph-wiki"
+  },
+  "slides": [
+    {
+      "id": "cover",
+      "layout": "cover",
+      "kicker": "TAICA 生成式 AI · Week 10 · 教學簡報",
+      "eyebrow": "從一句話 Prompt，到可驗證的工作流",
+      "title": "把工作拆成<br><em>AI 能做的流程</em>",
+      "subtitle": "Loop / Graph Engineering 入門：從一句話 Prompt，到可驗證、可退回的工作流。",
+      "meta": ["13 頁", "約 15 分鐘", "2026-11-13"],
+      "wiki": ["concepts/harness-loop-graph"],
+      "sources": ["S1"]
+    },
+    {
+      "id": "pain",
+      "layout": "three-up",
+      "kicker": "01 / 為什麼",
+      "title": "你以為在用 AI，<br>其實你在當 AI 的迴圈。",
+      "lead": "一句話 Prompt 生出 HTML 很快，但接下來是人類無止盡的檢查與重下指令。",
+      "cards": [
+        {
+          "num": "01",
+          "title": "排版爆版",
+          "body": "第 5 頁字太多，直接跑出投影片畫面外。",
+          "tag": "Overflow"
+        },
+        {
+          "num": "02",
+          "title": "數字沒出處",
+          "body": "簡報寫「準確率提升 37%」——哪一篇？哪個實驗？",
+          "tag": "Traceability"
+        },
+        {
+          "num": "03",
+          "title": "只讀了 3 篇",
+          "body": "Wiki 有 8 篇相關論文，AI 只挑了最前面的 3 篇。",
+          "tag": "Coverage"
+        }
+      ],
+      "note": "表面上是 AI 在做，實際上是你自己在跑迴圈。",
+      "wiki": ["methods/teaching-deck-pipeline", "concepts/verification"],
+      "sources": ["S1"]
+    },
+    {
+      "id": "structures",
+      "layout": "diagram",
+      "kicker": "02 / 結構",
+      "title": "Prompt、Loop、Graph：<br>差別是「誰決定下一步」。",
+      "lead": "三者在圖論上都是圖，差別在節點數量、條件邊與退回邊。",
+      "diagram": "structures",
+      "notes": [
+        {"label": "Prompt", "text": "這一輪要做什麼；人類讀完再寫下一句。"},
+        {"label": "Loop", "text": "目標、驗證、停止條件；系統依檢查結果決定下一步。"},
+        {"label": "Graph", "text": "節點、條件邊、退回邊；人類事先畫好流程。"}
+      ],
+      "note": "不是哪個比較高級，而是這個任務需要多少結構。",
+      "wiki": ["comparisons/prompt-loop-graph", "concepts/harness-loop-graph"],
+      "sources": ["S1", "S2"]
+    },
+    {
+      "id": "loop-five",
+      "layout": "loop",
+      "kicker": "03 / Loop",
+      "title": "一個 Loop，<br>要寫清楚五件事。",
+      "lead": "少了任何一個，AI 就會用「看起來差不多」的標準交差。",
+      "items": [
+        {"num": "01", "title": "目標", "text": "產出什麼、格式、放哪裡、給誰看。"},
+        {"num": "02", "title": "限制", "text": "哪些檔案能動、哪些絕對不能動。"},
+        {"num": "03", "title": "驗證", "text": "程式檢查 + 獨立 AI 審查，雙軌並行。"},
+        {"num": "04", "title": "剎車", "text": "最多 3 輪、資料不足就停、成本上限。"},
+        {"num": "05", "title": "觸發", "text": "什麼時候開始跑？誰按下去？"}
+      ],
+      "note": "沒有停止條件的迴圈，只是燒錢。",
+      "wiki": ["concepts/loop-five-elements", "concepts/stop-conditions"],
+      "sources": ["S1", "S5"]
+    },
+    {
+      "id": "verification",
+      "layout": "split",
+      "kicker": "04 / 驗證",
+      "title": "驗證要雙軌：<br>程式檢查 + 獨立 AI 審查。",
+      "lead": "程式檢查抓客觀條件，獨立審查抓語意品質；兩者不能互相替代。",
+      "leftTitle": "兩條軌道",
+      "leftItems": [
+        "程式檢查：頁數、出處、數字、連結、overflow。",
+        "獨立 AI 審查：忠實度、覆蓋率、教學結構。",
+        "每一條規則都要能回答：哪裡錯、為什麼錯、怎麼修。"
+      ],
+      "rightTitle": "獨立審查的三個條件",
+      "rightItems": [
+        "開啟全新對話，不帶生成過程的記憶。",
+        "只給最終成品與被引用的來源。",
+        "審查者只產出報告，不動手改內容。"
+      ],
+      "flow": ["生成", "程式檢查", "獨立 AI 審查", "交件"],
+      "callout": "生成者會護航自己的產出；只有新上下文，才看得到自己的盲點。",
+      "note": "球員不能兼裁判：不要讓生成者審自己。",
+      "wiki": ["concepts/verification"],
+      "sources": ["S1", "S3", "S5"]
+    },
+    {
+      "id": "graph-pipeline",
+      "layout": "pipeline",
+      "kicker": "05 / Graph",
+      "title": "Graph：把「誰能改什麼」畫出來。",
+      "lead": "六個節點、五個關卡；錯在哪一關，就退回哪一關。",
+      "pipeline": "deck",
+      "note": "大圈很少轉，小圈轉得很快。",
+      "wiki": ["concepts/graph-nodes-edges", "concepts/fallback-edges", "methods/teaching-deck-pipeline"],
+      "sources": ["S1", "S4"]
+    },
+    {
+      "id": "scoping",
+      "layout": "table",
+      "kicker": "06 / 權限",
+      "title": "每個節點，<br>只能看它該看的。",
+      "lead": "權限不是限制能力，而是讓錯誤可以被定位。",
+      "columns": ["節點", "只能看", "不能做"],
+      "rows": [
+        ["證據卡", "單一一篇來源", "混入其他論文或外部來源"],
+        ["逐頁稿", "確認過的大綱 + 該頁卡片", "引用卡片以外的內容"],
+        ["渲染", "已通過忠實度審查的逐頁稿", "修改任何一個字"],
+        ["檢查", "該階段成品 + 原始來源", "動手改內容"]
+      ],
+      "callout": "如果一個節點能看到所有資料，它就沒有理由只做一件事。",
+      "note": "球員不能兼裁判；檢查員只負責產出報告。",
+      "wiki": ["concepts/information-scoping"],
+      "sources": ["S1", "S5"]
+    },
+    {
+      "id": "state",
+      "layout": "split",
+      "kicker": "07 / 狀態",
+      "title": "State as Files：<br>資料夾就是流程的記憶體。",
+      "lead": "每一個節點的產出都是實體檔案，可以 diff、可以重跑、可以只退回某一關。",
+      "leftTitle": "一次執行的狀態",
+      "leftCode": "run/<date>-<topic>/\n├── sources.md\n├── cards/\n├── outline.md\n├── drafts/\n├── report.md\n└── review.md",
+      "rightTitle": "三個好處",
+      "rightItems": [
+        "可追溯：出錯時看得到是哪一關的哪個檔案。",
+        "可重跑：不用整份流程重來，只重跑壞掉的那一關。",
+        "可協作：人類直接打開檔案，不需要理解整個系統。"
+      ],
+      "callout": "檔案不只是備份，而是下一輪的輸入；沒有它，AI 只能從對話裡猜。",
+      "note": "沒有變成檔案的產出，等於沒有發生。",
+      "wiki": ["concepts/state-as-files"],
+      "sources": ["S1", "S4", "S5"]
+    },
+    {
+      "id": "decision",
+      "layout": "table",
+      "kicker": "08 / 選擇",
+      "title": "什麼時候用哪一種？",
+      "lead": "不要問「哪個比較高級」，要問「這個任務需要多少結構」。",
+      "columns": ["情境", "建議", "為什麼"],
+      "rows": [
+        ["一次性、馬上會看結果", "Prompt", "人類即時判斷，最快"],
+        ["重複做、修正指令差不多", "Loop", "寫一次規格，系統自動跑"],
+        ["多階段、不同驗收標準", "Graph", "精準退回，不整份重跑"]
+      ],
+      "callout": "結構是為了重複與複雜度，不是為了好看。",
+      "warning": "不要為了炫技而硬把所有事情都拆成複雜的 Graph；先用最簡單的結構，真的不夠再升級。",
+      "note": "先用 Prompt；不夠再 Loop；真的複雜才 Graph。",
+      "wiki": ["comparisons/prompt-loop-graph"],
+      "sources": ["S1", "S2", "S7"]
+    },
+    {
+      "id": "real-run",
+      "layout": "metrics",
+      "kicker": "09 / 實作",
+      "title": "這份簡報，<br>就是這樣生下來的。",
+      "lead": "不是一句話生成，而是 7 個節點、5 個關卡、3 輪檢查。",
+      "metrics": [
+        {"value": "7", "label": "篇來源"},
+        {"value": "22", "label": "頁 Wiki"},
+        {"value": "13", "label": "頁簡報"},
+        {"value": "3", "label": "輪檢查"},
+        {"value": "0", "label": "overflow"}
+      ],
+      "note": "每一頁的 footer 都有 wiki 與原始來源；每一個數字都能回溯。",
+      "wiki": ["methods/teaching-deck-pipeline"],
+      "sources": ["S1", "S2"]
+    },
+    {
+      "id": "shift-left",
+      "layout": "split",
+      "kicker": "10 / 修正",
+      "title": "檢查往前移，<br>大圈就會變小圈。",
+      "lead": "第 1 輪先抓 overflow，第 2 輪抓視覺重疊；把檢查移到決策端之後，第 3 輪就乾淨了。",
+      "leftTitle": "三輪的軌跡",
+      "leftItems": [
+        "第 1 輪：2 頁 overflow（封面 10px、Loop 63px）；0 頁缺引用。",
+        "第 2 輪：overflow 歸零；視覺檢查抓到 HUD 與退回標籤重疊。",
+        "第 3 輪：程式檢查、渲染檢查全過；進入獨立審查。"
+      ],
+      "bars": [
+        {"label": "第 1 輪", "value": 2},
+        {"label": "第 2 輪", "value": 2},
+        {"label": "第 3 輪", "value": 0}
+      ],
+      "rightTitle": "檢查移到哪裡",
+      "rightItems": [
+        "證據卡：數字與原文位置。",
+        "大綱：覆蓋率與教學順序。",
+        "逐頁稿：忠實度與出處。"
+      ],
+      "note": "錯誤必須在離源頭最近的地方被抓到。",
+      "wiki": ["concepts/fallback-edges", "concepts/verification"],
+      "sources": ["S1", "S5"]
+    },
+    {
+      "id": "checklist",
+      "layout": "checklist",
+      "kicker": "11 / 帶走",
+      "title": "下一個任務，<br>先寫這張檢查表。",
+      "lead": "如果寫不出來，代表你還不確定「完成」是什麼。",
+      "items": [
+        "目標：產出什麼、格式、放哪裡？",
+        "限制：哪些能動、哪些不能？",
+        "驗證：程式檢查 + 獨立審查？",
+        "剎車：幾輪、資料不足、成本？",
+        "觸發：什麼時候開始、誰按下去？",
+        "來源：至少 5 篇，每篇有出處？",
+        "簡報：8–15 頁，每頁有 citation？",
+        "退回：錯在哪一關，退回哪裡？"
+      ],
+      "callout": "寫不出這張表，通常不是 AI 不夠強，而是你還沒決定「完成」長什麼樣子。",
+      "note": "說「檢查一下」不算驗證；說「做好一點」不算規格。",
+      "wiki": ["concepts/loop-five-elements", "concepts/verification"],
+      "sources": ["S1", "S5"]
+    },
+    {
+      "id": "end",
+      "layout": "end",
+      "kicker": "12 / 結尾",
+      "title": "把「一直盯場」，<br>換成「設計一次」。",
+      "subtitle": "Wiki 是記憶，Loop 是引擎，Graph 是路網。",
+      "quote": "先寫好「完成的定義」，再決定要不要加上 loop 或 graph。",
+      "links": [
+        {"label": "Wiki 入口", "href": "wiki.html#index"},
+        {"label": "工作流規格", "href": "wiki.html#teaching-deck-pipeline"},
+        {"label": "檢查報告", "href": "wiki.html#verification"}
+      ],
+      "wiki": ["index"],
+      "sources": ["S1"]
+    }
+  ]
+}

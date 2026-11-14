@@ -1,0 +1,19 @@
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local tools
+.git-disabled/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+
+# Generated local QA output that is not needed in git history
+qa/
+
+# Public Pages artifact
+_site/
+
+# Internal working material
+_private/
