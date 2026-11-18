@@ -345,6 +345,9 @@ def bottom_note(slide: dict) -> str:
 
 def render_cover(slide: dict) -> str:
     meta = "".join(f"<span>{esc(item)}</span>" for item in slide.get("meta", []))
+    link = slide.get("wiki_link")
+    if link:
+        meta += f'<a class="cover-wiki" href="{esc(link["href"])}">{esc(link["label"])}</a>'
     return f"""
       <div class="cover-grid">
         <div class="cover-main">

@@ -16,6 +16,7 @@
       "title": "把工作拆成<br><em>AI 能做的流程</em>",
       "subtitle": "Loop / Graph Engineering 入門：從一句話 Prompt，到可驗證、可退回的工作流。",
       "meta": ["13 頁", "約 15 分鐘", "2026-11-13"],
+      "wiki_link": {"href": "wiki.html", "label": "內容來源：本主題 LLM Wiki（22 頁 · 7 篇來源）→"},
       "wiki": ["concepts/harness-loop-graph"],
       "sources": ["S1"]
     },
