@@ -252,25 +252,26 @@ def pipeline_svg() -> str:
         ("N3", "大綱", "outline.md"),
         ("N4", "逐頁稿", "drafts/"),
         ("N5", "渲染", "index.html"),
-        ("N6", "交件", "report.md"),
+        ("N6", "審查", "review.md"),
+        ("N7", "交件", "report.md"),
     ]
-    xs = [30, 250, 470, 690, 910, 1130]
+    xs = [30, 220, 410, 600, 790, 980, 1170]
     y = 210
-    nw, nh = 170, 86
+    nw, nh = 150, 86
     for (num, title, sub), x in zip(nodes, xs):
         parts.append(svg_node(x, y, nw, nh, title, f"{num} · {sub}", accent=(num in {"N4", "N5"})))
 
-    for i in range(5):
+    for i in range(len(xs) - 1):
         x1 = xs[i] + nw
         x2 = xs[i + 1]
         parts.append(svg_path(f"M{x1},253 L{x2},253", INK, 2.0, marker="arrow-ink"))
 
     gates = [
-        (225, "G1", "覆蓋率"),
-        (445, "G2", "人類"),
-        (665, "G3", "忠實度"),
-        (885, "G4", "版面"),
-        (1105, "G5", "審查"),
+        (200, "G1", "覆蓋率"),
+        (580, "G2", "人類"),
+        (770, "G3", "忠實度"),
+        (960, "G4", "版面"),
+        (1150, "G5", "審查"),
     ]
     for gx, gnum, glabel in gates:
         parts.append(
@@ -280,18 +281,18 @@ def pipeline_svg() -> str:
         parts.append(svg_text(gx, 112, glabel, 12, MUTED, "middle", 600))
 
     # fallback edges
-    parts.append(svg_path("M445,180 C445,196 520,196 520,210", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
-    parts.append(svg_text(492, 198, "退回", 10, ACCENT, "middle", 700, FONT_MONO, 0.8))
+    parts.append(svg_path("M580,180 C580,196 485,196 485,210", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
+    parts.append(svg_text(532, 198, "退回", 10, ACCENT, "middle", 700, FONT_MONO, 0.8))
 
-    parts.append(svg_path("M665,180 C665,300 760,300 760,296", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
-    parts.append(svg_text(716, 332, "只改該頁", 10, ACCENT, "middle", 700, FONT_MONO, 0.8))
+    parts.append(svg_path("M770,180 L770,312 C770,336 730,336 730,296", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
+    parts.append(svg_text(820, 330, "只改該頁", 10, ACCENT, "middle", 700, FONT_MONO, 0.8))
 
-    parts.append(svg_path("M885,180 C885,340 800,340 800,296", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
-    parts.append(svg_text(842, 362, "刪字", 10, ACCENT, "middle", 700, FONT_MONO, 0.8))
+    parts.append(svg_path("M960,180 L960,320 C960,380 660,380 660,296", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
+    parts.append(svg_text(810, 390, "刪字", 10, ACCENT, "middle", 700, FONT_MONO, 0.8))
 
     parts.append(
         svg_path(
-            "M1105,180 C1105,440 335,440 335,296",
+            "M1150,180 L1150,320 C1150,450 295,450 295,296",
             ACCENT,
             1.8,
             dash="6 5",
@@ -301,9 +302,9 @@ def pipeline_svg() -> str:
     parts.append(svg_text(720, 462, "G5 失敗 → 退回 N2 補卡，再回 N4 補該頁", 11, ACCENT, "middle", 700, FONT_MONO, 0.6))
 
     # stop branch at G1
-    parts.append(svg_path("M225,180 C225,196 225,196 225,196", ACCENT, 1.8, marker=""))
-    parts.append(svg_pill(120, 350, 150, 30, "STOP < 3 頁", ACCENT))
-    parts.append(svg_path("M225,180 C225,280 195,320 195,350", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
+    parts.append(svg_path("M200,180 C200,196 200,196 200,196", ACCENT, 1.8, marker=""))
+    parts.append(svg_pill(95, 350, 150, 30, "STOP < 3 頁", ACCENT))
+    parts.append(svg_path("M200,180 C200,280 170,320 170,350", ACCENT, 1.8, dash="6 5", marker="arrow-accent"))
 
     # legend
     parts.append(svg_line(40, 486, 100, 486, INK, 2))

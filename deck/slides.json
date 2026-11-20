@@ -36,7 +36,7 @@
         {
           "num": "02",
           "title": "數字沒出處",
-          "body": "簡報寫「準確率提升 37%」——哪一篇？哪個實驗？",
+          "body": "簡報寫「準確率提升 37%」，出自哪一篇、哪個實驗？",
           "tag": "Traceability"
         },
         {
@@ -62,7 +62,7 @@
         {"label": "Loop", "text": "目標、驗證、停止條件；系統依檢查結果決定下一步。"},
         {"label": "Graph", "text": "節點、條件邊、退回邊；人類事先畫好流程。"}
       ],
-      "note": "不是哪個比較高級，而是這個任務需要多少結構。",
+      "note": "Prompt 最輕，Graph 最重；任務需要多少結構，就選哪一種。",
       "wiki": ["comparisons/prompt-loop-graph", "concepts/harness-loop-graph"],
       "sources": ["S1", "S2"]
     },
@@ -112,7 +112,7 @@
       "layout": "pipeline",
       "kicker": "05 / Graph",
       "title": "Graph：把「誰能改什麼」畫出來。",
-      "lead": "六個節點、五個關卡；錯在哪一關，就退回哪一關。",
+      "lead": "七個節點、五個關卡；錯在哪一關，就退回哪一關。",
       "pipeline": "deck",
       "note": "大圈很少轉，小圈轉得很快。",
       "wiki": ["concepts/graph-nodes-edges", "concepts/fallback-edges", "methods/teaching-deck-pipeline"],
@@ -123,7 +123,7 @@
       "layout": "table",
       "kicker": "06 / 權限",
       "title": "每個節點，<br>只能看它該看的。",
-      "lead": "權限不是限制能力，而是讓錯誤可以被定位。",
+      "lead": "權限劃清楚，出錯時才找得到是哪一步。",
       "columns": ["節點", "只能看", "不能做"],
       "rows": [
         ["證據卡", "單一一篇來源", "混入其他論文或外部來源"],
@@ -132,7 +132,7 @@
         ["檢查", "該階段成品 + 原始來源", "動手改內容"]
       ],
       "callout": "如果一個節點能看到所有資料，它就沒有理由只做一件事。",
-      "note": "球員不能兼裁判；檢查員只負責產出報告。",
+      "note": "檢查員只寫報告，不動手改。",
       "wiki": ["concepts/information-scoping"],
       "sources": ["S1", "S5"]
     },
@@ -150,7 +150,7 @@
         "可重跑：不用整份流程重來，只重跑壞掉的那一關。",
         "可協作：人類直接打開檔案，不需要理解整個系統。"
       ],
-      "callout": "檔案不只是備份，而是下一輪的輸入；沒有它，AI 只能從對話裡猜。",
+      "callout": "檔案也是下一輪的輸入；沒有它，AI 只能從對話裡猜。",
       "note": "沒有變成檔案的產出，等於沒有發生。",
       "wiki": ["concepts/state-as-files"],
       "sources": ["S1", "S4", "S5"]
@@ -178,7 +178,7 @@
       "layout": "metrics",
       "kicker": "09 / 實作",
       "title": "這份簡報，<br>就是這樣生下來的。",
-      "lead": "不是一句話生成，而是 7 個節點、5 個關卡、3 輪檢查。",
+      "lead": "7 個節點、5 個關卡、3 輪檢查，一步一步做出來。",
       "metrics": [
         {"value": "7", "label": "篇來源"},
         {"value": "22", "label": "頁 Wiki"},
@@ -229,11 +229,11 @@
         "驗證：程式檢查 + 獨立審查？",
         "剎車：幾輪、資料不足、成本？",
         "觸發：什麼時候開始、誰按下去？",
-        "來源：至少 5 篇，每篇有出處？",
-        "簡報：8–15 頁，每頁有 citation？",
+        "來源：每個說法都找得到出處？",
+        "格式：頁數上限、每頁都有引用？",
         "退回：錯在哪一關，退回哪裡？"
       ],
-      "callout": "寫不出這張表，通常不是 AI 不夠強，而是你還沒決定「完成」長什麼樣子。",
+      "callout": "每一格都要能交給程式或另一個 AI 檢查；只能靠感覺判斷的，就還沒寫清楚。",
       "note": "說「檢查一下」不算驗證；說「做好一點」不算規格。",
       "wiki": ["concepts/loop-five-elements", "concepts/verification"],
       "sources": ["S1", "S5"]
@@ -248,7 +248,7 @@
       "links": [
         {"label": "Wiki 入口", "href": "wiki.html#index"},
         {"label": "工作流規格", "href": "wiki.html#teaching-deck-pipeline"},
-        {"label": "檢查報告", "href": "wiki.html#verification"}
+        {"label": "雙軌驗證", "href": "wiki.html#verification"}
       ],
       "wiki": ["index"],
       "sources": ["S1"]

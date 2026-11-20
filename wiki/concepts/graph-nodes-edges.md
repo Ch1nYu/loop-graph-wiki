@@ -3,7 +3,7 @@ id: graph-nodes-edges
 title: "Graph 的基本元素：節點、邊、條件邊、狀態"
 type: concept
 audience: beginner
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, langgraph-agents-course, agentic-workflow-humaneval, ai-agent-system-design-course]
 related: [fallback-edges, state-as-files, harness-loop-graph]
 ---
@@ -20,7 +20,7 @@ related: [fallback-edges, state-as-files, harness-loop-graph]
 2. **Loop**：一個節點 `A`，加一條回到自己的邊（`A ↺`）。
 3. **Graph**：多個節點（`A → B → C`），加上條件分支與退回邊。
 
-這個視角的好處是：你不會把 Graph 想成「比較高級的 Loop」，而會看到它們的結構差異——Graph 多了**多節點**與**條件邊**，因此可以分工、可以並行、可以精準退回。
+這個視角的好處是：你會看到 Graph 和 Loop 的結構差異：Graph 多了**多節點**與**條件邊**，因此可以分工、可以並行、可以精準退回。
 
 ## 四個基本元素
 
@@ -90,7 +90,7 @@ Graph 的節點不一定是確定的程式；很多節點是 LLM 呼叫，輸出
 
 LangGraph 的 Checkpointer 在每個節點前後保存狀態快照，配合 `thread_id` 實現多會話隔離與斷點續傳；`get_state_history` 可以列出歷史快照，用過去的 `thread_ts` 重新執行，實現時間旅行（[[sources/langgraph-agents-course]] §Checkpointer 與 Thread、§時間旅行）。
 
-時間旅行不是「改變過去」，而是「從某個快照開一個新分支」，原分支保留。這對除錯很有用：你可以回到「大綱剛寫完」的狀態，換一個教學順序，看看結果差多少。
+時間旅行是「從某個快照開一個新分支」，原分支保留，過去的紀錄不會被改掉。這對除錯很有用：你可以回到「大綱剛寫完」的狀態，換一個教學順序，看看結果差多少。
 
 ## 常見誤解
 

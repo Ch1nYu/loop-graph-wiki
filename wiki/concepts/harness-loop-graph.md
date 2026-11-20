@@ -3,7 +3,7 @@ id: harness-loop-graph
 title: "Harness、Loop、Graph：三層工程的分工"
 type: concept
 audience: beginner
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, agentic-workflow-humaneval, building-effective-ai-agents, agentic-harness-kimi-k3, ai-agent-system-design-course]
 related: [loop-five-elements, graph-nodes-edges, prompt-loop-graph]
 ---
@@ -26,7 +26,7 @@ related: [loop-five-elements, graph-nodes-edges, prompt-loop-graph]
 | **Loop** | 這一輪要做什麼、怎麼知道做完了、什麼時候停？ | 目標、限制、驗證、停止條件、觸發 | 人類變成人工迴圈；AI 無限重試或提早收工 |
 | **Graph** | 有哪些節點、誰把控制權交給誰、錯了退回哪裡？ | 節點、邊、條件邊、狀態、退回路線 | 每次修正都整份重跑；錯誤在最後才被發現 |
 
-這三層不是替代關係，而是疊加關係。Harness 是地板，Loop 是引擎，Graph 是路網（[[sources/agentic-workflow-humaneval]] §Harness、Loop 與 Graph）。
+這三層疊在一起使用。Harness 是地板，Loop 是引擎，Graph 是路網（[[sources/agentic-workflow-humaneval]] §Harness、Loop 與 Graph）。
 
 ## Harness：把「工作」而不是「模型」放在中心
 
@@ -44,15 +44,15 @@ Harness 的原文定義是「周邊機制：上下文、工具、權限、持續
 
 ## Loop：把「修正」寫成規格
 
-Loop 不是「一直重試」，而是「觀察—行動—驗證」的循環，並且有明確的觸發與以證據為基礎的停止規則（[[sources/agentic-workflow-humaneval]] §Harness、Loop 與 Graph）。一個完整的 Loop 要寫清楚五件事：目標、限制、完成標準與驗證、停止條件、觸發條件（[[sources/week10-lecture]] §3.2）。
+Loop 是「觀察 → 行動 → 驗證」的循環，並且有明確的觸發與以證據為基礎的停止規則（[[sources/agentic-workflow-humaneval]] §Harness、Loop 與 Graph）。一個完整的 Loop 要寫清楚五件事：目標、限制、完成標準與驗證、停止條件、觸發條件（[[sources/week10-lecture]] §3.2）。
 
-Loop 與 Prompt 的差別，不是「有沒有用文字」，而是「誰決定下一步」：寫 Prompt 是寫這一輪要做什麼，人類讀完輸出再寫下一句；寫 Loop 是寫一份會自己執行的規格，系統依檢查結果決定下一步（[[sources/week10-lecture]] §3.1）。
+Loop 與 Prompt 的差別在於「誰決定下一步」：寫 Prompt 是寫這一輪要做什麼，人類讀完輸出再寫下一句；寫 Loop 是寫一份會自己執行的規格，系統依檢查結果決定下一步（[[sources/week10-lecture]] §3.1）。
 
 ## Graph：把「控制權」畫出來
 
 Graph 用節點與邊描述工作流拓撲，控制允許的下一步、分支、併發、狀態轉移與復原路徑（[[sources/agentic-workflow-humaneval]] §Harness、Loop 與 Graph）。在 LangGraph 的實作裡，節點是處理單元、邊是固定流向、條件邊是決策分流、State 是全域狀態（[[sources/langgraph-agents-course]] §Agentic Workflow 基礎）。
 
-Graph 的價值不是「看起來比較專業」，而是**精準退回**：錯在哪一關，就退回哪一關，不用整份重跑（[[sources/week10-lecture]] §5.3）。這也是 Graph 與單純 pipeline 的差別：pipeline 只有往前，Graph 有條件分支與退回邊。
+Graph 的價值在於**精準退回**：錯在哪一關，就退回哪一關，不用整份重跑（[[sources/week10-lecture]] §5.3）。這也是 Graph 與單純 pipeline 的差別：pipeline 只有往前，Graph 有條件分支與退回邊。
 
 ## 三層如何協作
 

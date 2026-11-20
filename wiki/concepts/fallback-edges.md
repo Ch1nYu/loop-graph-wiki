@@ -3,14 +3,14 @@ id: fallback-edges
 title: "退回邊與檢查前移：大圈少轉，小圈快轉"
 type: concept
 audience: intermediate
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, agentic-workflow-humaneval, agentic-harness-kimi-k3]
 related: [graph-nodes-edges, verification, information-scoping]
 ---
 
 # 退回邊與檢查前移：大圈少轉，小圈快轉
 
-> 一句話：好的 Graph 不是沒有錯誤，而是錯誤在離源頭最近的地方被發現、被修掉。
+> 一句話：好的 Graph 一樣會出錯，差別在錯誤會在離源頭最近的地方被發現、被修掉。
 
 ## 兩種迴圈：小圈與大圈
 
@@ -40,8 +40,8 @@ related: [graph-nodes-edges, verification, information-scoping]
 
 例如：
 
-- 如果等到 HTML 做完才發現「少讀了兩篇論文」，就要退回檢索、重抽卡、重寫大綱、重寫逐頁稿、重渲染——這是大圈。
-- 如果在大綱階段就檢查覆蓋率，發現少兩篇，只要退回檢索補卡，再修大綱——這是小圈。
+- 如果等到 HTML 做完才發現「少讀了兩篇論文」，就要退回檢索、重抽卡、重寫大綱、重寫逐頁稿、重渲染，這是大圈。
+- 如果在大綱階段就檢查覆蓋率，發現少兩篇，只要退回檢索補卡，再修大綱，這是小圈。
 
 這就是「檢查前移」：把檢查從成品端移到決策端。越早發現，退回成本越低。
 

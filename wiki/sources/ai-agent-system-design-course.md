@@ -5,7 +5,7 @@ type: source
 source_kind: course-summary
 original_url: "https://x.com/LunarResearcher/status/2084984207495827776"
 ingested: 2026-11-13
-updated: 2026-11-13
+updated: 2026-11-20
 reliability: medium
 coverage: [harness, loop, graph, memory, evolution]
 ---
@@ -16,7 +16,7 @@ coverage: [harness, loop, graph, memory, evolution]
 
 這是一堂約 3 小時的 AI agent 系統設計課的筆記，從 RAG 基礎、多 agent 架構、記憶體系，一路講到 Loop/Graph 工程化、LLM Ops 評估閉環與開源專案部署。課程把 agent 的演進整理成一個階梯：Prompt Engineering → Context Engineering → Skills/Procedural Memory → Loop → Graph。
 
-對本 Wiki 最重要的是兩點：第一，Loop 與 Graph 不是互相取代，而是互補——Loop 適合探索性任務（例如 Deep Research），Graph 適合 SOP 固定的企業流程。第二，Graph 的節點可以是確定性的程式，也可以是非確定性的 LLM 呼叫；因此需要 LLM routing 的邊與 guards 的防護。
+對本 Wiki 最重要的是兩點：第一，Loop 與 Graph 互補：Loop 適合探索性任務（例如 Deep Research），Graph 適合 SOP 固定的企業流程。第二，Graph 的節點可以是確定性的程式，也可以是非確定性的 LLM 呼叫；因此需要 LLM routing 的邊與 guards 的防護。
 
 ## 關鍵主張（可引用）
 

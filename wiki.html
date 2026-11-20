@@ -81,7 +81,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>從圖論看三種結構</h2>
 <p>課程用圖論把 Prompt、Loop、Graph 放在同一個框架裡（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.3）：</p>
 <ol><li><strong>Prompt</strong>：只有一個節點 <code>A</code>，跑一次就結束。</li><li><strong>Loop</strong>：一個節點 <code>A</code>，加一條回到自己的邊（<code>A ↺</code>）。</li><li><strong>Graph</strong>：多個節點（<code>A → B → C</code>），加上條件分支與退回邊。</li></ol>
-<p>這個視角的好處是：你不會把 Graph 想成「比較高級的 Loop」，而會看到它們的結構差異——Graph 多了<strong>多節點</strong>與<strong>條件邊</strong>，因此可以分工、可以並行、可以精準退回。</p>
+<p>這個視角的好處是：你會看到 Graph 和 Loop 的結構差異：Graph 多了<strong>多節點</strong>與<strong>條件邊</strong>，因此可以分工、可以並行、可以精準退回。</p>
 <h2>四個基本元素</h2>
 <h3>節點（Node）</h3>
 <p>節點是一個處理單元，可以是一個 LLM 呼叫、一個工具、一個 Python 函式，或一個人工審核關卡。LangGraph 的節點可以是 <code>call_model</code>、<code>action</code>、<code>planner</code>、<code>generate</code> 等（<a href="#langgraph-agents-course">Andrew Ng 與 LangChain 的 LangGraph Agent 課程</a> §Agentic Workflow 基礎）。</p>
@@ -112,7 +112,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <ul><li>明確的輸入與輸出格式。</li><li>失敗時的重試或退回規則。</li><li>輸出驗證（例如 JSON schema、關鍵字、長度）。</li><li>必要時的人工審核。</li></ul>
 <h2>Checkpoint 與時間旅行</h2>
 <p>LangGraph 的 Checkpointer 在每個節點前後保存狀態快照，配合 <code>thread_id</code> 實現多會話隔離與斷點續傳；<code>get_state_history</code> 可以列出歷史快照，用過去的 <code>thread_ts</code> 重新執行，實現時間旅行（<a href="#langgraph-agents-course">Andrew Ng 與 LangChain 的 LangGraph Agent 課程</a> §Checkpointer 與 Thread、§時間旅行）。</p>
-<p>時間旅行不是「改變過去」，而是「從某個快照開一個新分支」，原分支保留。這對除錯很有用：你可以回到「大綱剛寫完」的狀態，換一個教學順序，看看結果差多少。</p>
+<p>時間旅行是「從某個快照開一個新分支」，原分支保留，過去的紀錄不會被改掉。這對除錯很有用：你可以回到「大綱剛寫完」的狀態，換一個教學順序，看看結果差多少。</p>
 <h2>常見誤解</h2>
 <div class="table-wrap"><table><tr><th>誤解</th><th>為什麼錯</th><th>正確做法</th></tr><tr><td>「Graph 就是流程圖，畫好看就好」</td><td>沒有狀態與條件邊的圖，只是裝飾。</td><td>每個節點要有輸入、輸出、檢查與退回路線。</td></tr><tr><td>「節點越多越專業」</td><td>節點太多會增加協調成本與失敗點。</td><td>用單一職責與最小可運作節點數。</td></tr><tr><td>「Graph 一定要用框架」</td><td>小專案用資料夾與腳本就能實作 Graph。</td><td>先用檔案與腳本，需要持久化再上框架。</td></tr><tr><td>「有 Checkpoint 就不會出錯」</td><td>Checkpoint 只保存狀態，不保證狀態正確。</td><td>每個節點仍要有驗證。</td></tr></table></div>
 <h2>教學用法</h2>
@@ -126,18 +126,18 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <p>課程把生成式 AI 的工程演進整理成五層：Prompt Engineering、Context Engineering、Harness Engineering、Loop Engineering、Graph Engineering（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §1.3）。本頁聚焦後三層，因為它們是「把工作拆成 AI 能做的流程」的核心。</p>
 <h2>三層各自的問題</h2>
 <div class="table-wrap"><table><tr><th>層次</th><th>它回答的問題</th><th>主要產出</th><th>缺少它會怎樣</th></tr><tr><td><strong>Harness</strong></td><td>AI 能看到什麼、能用什麼工具、有什麼權限、狀態存在哪裡？</td><td>專案規則、任務 Skill、工具、沙箱、權限、記憶、觀測</td><td>模型拿到錯的上下文、亂用工具、越權修改檔案</td></tr><tr><td><strong>Loop</strong></td><td>這一輪要做什麼、怎麼知道做完了、什麼時候停？</td><td>目標、限制、驗證、停止條件、觸發</td><td>人類變成人工迴圈；AI 無限重試或提早收工</td></tr><tr><td><strong>Graph</strong></td><td>有哪些節點、誰把控制權交給誰、錯了退回哪裡？</td><td>節點、邊、條件邊、狀態、退回路線</td><td>每次修正都整份重跑；錯誤在最後才被發現</td></tr></table></div>
-<p>這三層不是替代關係，而是疊加關係。Harness 是地板，Loop 是引擎，Graph 是路網（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph）。</p>
+<p>這三層疊在一起使用。Harness 是地板，Loop 是引擎，Graph 是路網（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph）。</p>
 <h2>Harness：把「工作」而不是「模型」放在中心</h2>
 <p>Harness 的原文定義是「周邊機制：上下文、工具、權限、持續性、控制、安全與可觀測性」（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph）。另一個說法是：Harness 是針對「工作」裁剪的控制層，不是針對某個模型；模型是商品，Harness 才是資產（<a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §五大核心概念）。</p>
 <p>在實作上，Harness 包含：</p>
 <ul><li><strong>規則</strong>：專案手冊定義目標、邊界、寫作規範與完成定義。</li><li><strong>技能</strong>：任務 Skill 定義特定任務的標準步驟與檢查。</li><li><strong>工具與權限</strong>：哪些檔案可讀、可寫、可執行；哪些動作需要人工核准。</li><li><strong>狀態</strong>：檔案、資料庫、ledger 或 checkpoint，讓下一輪能接續。</li><li><strong>觀測</strong>：log、diff、測試結果、截圖，讓人類能驗收。</li></ul>
 <p>課程用「AI Agent = AI Model（大腦）+ Harness（工作裝備）」來描述這個關係（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §1.3）。同一個模型，換一套 Harness，產出品質可能差很多；這就是為什麼與其一直換模型，不如先把 Harness 建好。</p>
 <h2>Loop：把「修正」寫成規格</h2>
-<p>Loop 不是「一直重試」，而是「觀察—行動—驗證」的循環，並且有明確的觸發與以證據為基礎的停止規則（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph）。一個完整的 Loop 要寫清楚五件事：目標、限制、完成標準與驗證、停止條件、觸發條件（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.2）。</p>
-<p>Loop 與 Prompt 的差別，不是「有沒有用文字」，而是「誰決定下一步」：寫 Prompt 是寫這一輪要做什麼，人類讀完輸出再寫下一句；寫 Loop 是寫一份會自己執行的規格，系統依檢查結果決定下一步（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.1）。</p>
+<p>Loop 是「觀察 → 行動 → 驗證」的循環，並且有明確的觸發與以證據為基礎的停止規則（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph）。一個完整的 Loop 要寫清楚五件事：目標、限制、完成標準與驗證、停止條件、觸發條件（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.2）。</p>
+<p>Loop 與 Prompt 的差別在於「誰決定下一步」：寫 Prompt 是寫這一輪要做什麼，人類讀完輸出再寫下一句；寫 Loop 是寫一份會自己執行的規格，系統依檢查結果決定下一步（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.1）。</p>
 <h2>Graph：把「控制權」畫出來</h2>
 <p>Graph 用節點與邊描述工作流拓撲，控制允許的下一步、分支、併發、狀態轉移與復原路徑（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph）。在 LangGraph 的實作裡，節點是處理單元、邊是固定流向、條件邊是決策分流、State 是全域狀態（<a href="#langgraph-agents-course">Andrew Ng 與 LangChain 的 LangGraph Agent 課程</a> §Agentic Workflow 基礎）。</p>
-<p>Graph 的價值不是「看起來比較專業」，而是<strong>精準退回</strong>：錯在哪一關，就退回哪一關，不用整份重跑（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.3）。這也是 Graph 與單純 pipeline 的差別：pipeline 只有往前，Graph 有條件分支與退回邊。</p>
+<p>Graph 的價值在於<strong>精準退回</strong>：錯在哪一關，就退回哪一關，不用整份重跑（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.3）。這也是 Graph 與單純 pipeline 的差別：pipeline 只有往前，Graph 有條件分支與退回邊。</p>
 <h2>三層如何協作</h2>
 <p>以「從 Wiki 生成教學簡報」為例：</p>
 <ol><li><strong>Harness</strong>：專案規則限定可使用的知識庫、唯讀來源與每頁出處要求；任務 Skill 規定節點與檢查。</li><li><strong>Loop</strong>：逐頁稿節點內部跑「寫一頁 → 對來源 → 修改」的小迴圈，最多 2 輪；渲染節點跑「產生 HTML → 截圖 → 修版面」的小迴圈，最多 3 輪。</li><li><strong>Graph</strong>：檢索 → 證據卡 → 大綱 → 逐頁稿 → 渲染 → 交件；每個關卡有條件邊與退回路線。</li></ol>
@@ -152,7 +152,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §1.3、§3.1、§3.2、§5.3</li><li><a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph</li><li><a href="#building-effective-ai-agents">Building Effective AI Agents（Anthropic）</a> §What are agents?</li><li><a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §五大核心概念</li><li><a href="#ai-agent-system-design-course">前 Google 工程師的 AI Agent 系統設計課</a> §第四階段</li></ul></section><section class="wiki-page" id="human-in-the-loop" data-title="Human-in-the-loop：人類該在哪一關介入"><div class="page-kicker">概念 · human-in-the-loop</div><h1 id="human-in-the-loop-人類該在哪一關介入">Human-in-the-loop：人類該在哪一關介入</h1><blockquote>一句話：人類不該當迴圈，而該當關卡；介入越早、越少，槓桿越高。</blockquote>
 <h2>從「人工盯場」到「人工關卡」</h2>
 <p>課程一開始描述的痛點是：人類交辦任務、AI 產出、人類檢查、人類再下指令、AI 再改……在這個模式裡，人類自己變成了那個不斷重複檢查與催促的迴圈（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §1.2）。</p>
-<p>Human-in-the-loop 的目標不是「人類什麼都不管」，而是把人類的注意力放在<strong>槓桿最高的決策點</strong>：需求摘要、大綱、最終驗收。其他時候，讓人類只看報告。</p>
+<p>Human-in-the-loop 的目標是把人類的注意力放在<strong>槓桿最高的決策點</strong>：需求摘要、大綱、最終驗收。其他時候，讓人類只看報告。</p>
 <h2>三個高槓桿介入點</h2>
 <div class="table-wrap"><table><tr><th>介入點</th><th>人類看什麼</th><th>為什麼在這裡介入</th><th>不介入的後果</th></tr><tr><td><strong>需求摘要</strong></td><td>主題、受眾、頁數、語言、來源範圍</td><td>一旦方向錯了，後面全錯</td><td>做了 13 頁才發現受眾不對</td></tr><tr><td><strong>大綱</strong></td><td>教學順序、每頁主張、覆蓋率</td><td>改大綱比改 HTML 便宜</td><td>簡報做完才發現少一個重要子題</td></tr><tr><td><strong>最終驗收</strong></td><td>成品、檢查報告、獨立審查</td><td>人類是最後一道判斷</td><td>自動化流程把錯的東西送上線</td></tr></table></div>
 <p>課程的 Graph 版流程就把「人類確認大綱」設成一個明確的關卡：不滿意就退回修大綱或補檢索，確認後才寫逐頁稿（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.3(1)）。</p>
@@ -163,7 +163,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>Gate 要坐在副作用處</h2>
 <p>Harness 的文章提醒：UI 強制的 gate 只是建議，真正的 Gate 要坐在副作用處（<a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §七大原語）。意思是，如果一個動作會產生不可逆的結果，不能只靠「畫面跳出警告」，而要在執行動作的程式碼裡攔截。</p>
 <p>對本專案的啟示：</p>
-<ul><li>大綱確認不是「在文件裡寫一句『已確認』」，而是大綱檔裡有明確的確認紀錄與時間。</li><li>交件不是「AI 說可以交」，而是所有程式檢查全過、獨立審查通過。</li></ul>
+<ul><li>大綱確認：大綱檔裡要有明確的確認紀錄與時間，只寫一句「已確認」不算。</li><li>交件：所有程式檢查全過、獨立審查通過才能交，AI 自己說可以交不算數。</li></ul>
 <h2>人類介入的成本</h2>
 <p>人類的時間是最貴的資源。因此：</p>
 <ul><li>不要讓人類檢查機器可以檢查的東西（頁數、連結、overflow）。</li><li>不要讓人類讀完整份草稿；讓人類讀「差異」與「檢查報告」。</li><li>不要讓人類在每個節點都按一次「繼續」；只在真正需要判斷的地方設關卡。</li></ul>
@@ -175,7 +175,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>檢查清單</h2>
 <ul><li>[ ] 人類是否只在需求、大綱、最終驗收等關鍵點介入？</li><li>[ ] 每個介入點是否有明確的輸入與決策？</li><li>[ ] 高風險動作前是否有 Gate？</li><li>[ ] 確認紀錄是否寫進狀態檔？</li><li>[ ] 人類是否只讀差異與報告，而不是讀完整份草稿？</li></ul>
 <h2>出處</h2>
-<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §1.2、§5.2、§5.3(1)</li><li><a href="#langgraph-agents-course">Andrew Ng 與 LangChain 的 LangGraph Agent 課程</a> §Human-in-the-loop</li><li><a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §七大原語</li></ul></section><section class="wiki-page" id="loop-five-elements" data-title="Loop 的五個要素：目標、限制、驗證、剎車、觸發"><div class="page-kicker">概念 · loop-five-elements</div><h1 id="loop-的五個要素-目標-限制-驗證-剎車-觸發">Loop 的五個要素：目標、限制、驗證、剎車、觸發</h1><blockquote>一句話：Loop 不是「一直試」，而是「一份會自己判斷下一步的規格」。</blockquote>
+<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §1.2、§5.2、§5.3(1)</li><li><a href="#langgraph-agents-course">Andrew Ng 與 LangChain 的 LangGraph Agent 課程</a> §Human-in-the-loop</li><li><a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §七大原語</li></ul></section><section class="wiki-page" id="loop-five-elements" data-title="Loop 的五個要素：目標、限制、驗證、剎車、觸發"><div class="page-kicker">概念 · loop-five-elements</div><h1 id="loop-的五個要素-目標-限制-驗證-剎車-觸發">Loop 的五個要素：目標、限制、驗證、剎車、觸發</h1><blockquote>一句話：Loop 是一份會自己判斷下一步的規格。</blockquote>
 <h2>為什麼需要五個要素</h2>
 <p>沒有目標，AI 不知道要做什麼；沒有完成標準，AI 不知道什麼時候算做完；沒有停止條件，AI 會無限重試；沒有觸發，這個 Loop 永遠不會開始。課程把這些整理成五個必寫項目，前三項是「當老闆」的三件事，後兩項是讓迴圈安全自動化的關鍵（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.2）。</p>
 <p>這五個要素也對應到零信任的五條規則：僅基於證據前進、限制重試次數、終止狀態必須是驗證輸出或記錄拒絕、權限按步驟分配、開發者自己掌控圖結構（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §零信任五規則）。</p>
@@ -219,7 +219,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <div class="table-wrap"><table><tr><th>誤解</th><th>為什麼錯</th><th>正確做法</th></tr><tr><td>「完成標準就是『看起來不錯』」</td><td>主觀標準無法自動判斷，也無法累積。</td><td>把標準拆成可執行的檢查與獨立的語意審查。</td></tr><tr><td>「停止條件會讓 AI 偷懶」</td><td>沒有停止條件才會讓 AI 無限燒錢。</td><td>用硬上限與資料不足條件，讓失敗可被看見。</td></tr><tr><td>「Loop 越大越好」</td><td>大 Loop 每次都要整份重跑，成本高、錯誤定位難。</td><td>把大 Loop 拆成多個小 Loop，錯在哪裡就修哪裡。</td></tr><tr><td>「AI 自己說做完就是做完」</td><td>生成者的自我評估有偏見。</td><td>用程式檢查 + 獨立 AI 審查。</td></tr></table></div>
 <h2>教學用法</h2>
 <p>用「請 AI 做一份簡報」當反例，讓學生列出：目標是什麼？限制是什麼？怎麼驗收？什麼時候停？誰來觸發？通常學生會發現自己只寫了目標，其他四項都沒寫。接著把五要素補齊，再比較「有 Loop」與「沒 Loop」的差異。</p>
-<p>如果學生寫不出這張表，通常不是 AI 不夠強，而是還沒決定「完成」長什麼樣子。</p>
+<p>如果學生寫不出這張表，通常代表還沒決定「完成」長什麼樣子，換更強的模型也幫不上忙。</p>
 <h2>檢查清單</h2>
 <ul><li>[ ] 目標是否具體到可以驗收？</li><li>[ ] 限制是否包含可動與不可動的檔案？</li><li>[ ] 驗證是否同時有程式檢查與獨立 AI 審查？</li><li>[ ] 停止條件是否包含硬上限、資料不足、成本？</li><li>[ ] 觸發條件是否明確？</li><li>[ ] 是否避免讓生成者審自己？</li></ul>
 <h2>出處</h2>
@@ -235,7 +235,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 ├── cards/                 # N2：每篇來源一張證據卡
 ├── outline.md             # N3：大綱（含人類確認紀錄）
 ├── drafts/                # N4：逐頁稿
-├── report.md              # N6：檢查與修正紀錄
+├── report.md              # N5–N7：檢查與修正紀錄
 └── review.md              # N6：獨立審查報告</code></pre>
 <p>最終產出是一份 HTML；中間狀態全部留在執行資料夾，不覆蓋、不刪除。這樣即使簡報改了 3 輪，我們還是可以回頭看第 1 輪的檢索結果與大綱，知道當時為什麼做那個決定。</p>
 <h2>狀態不是只有「檔案」，還有「事件」</h2>
@@ -268,7 +268,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>五種常見剎車</h2>
 <h3>1. 硬上限（Hard Cap）</h3>
 <p>最簡單也最可靠：最多改 3 輪（或 5 輪）。改滿就停，附上報告請人類處理。</p>
-<p>課程的建議是：如果改了 3 輪還沒通過，代表問題出在規格或資料，應立即停下來讓人類介入（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.2）。這個數字不是魔法，而是一個「不要再自動燒錢」的界線。</p>
+<p>課程的建議是：如果改了 3 輪還沒通過，代表問題出在規格或資料，應立即停下來讓人類介入（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.2）。3 輪是一條經驗上的界線：超過就不要再自動燒錢。</p>
 <h3>2. 資料不足就停（Stop on Insufficient Data）</h3>
 <p>如果知識庫裡找不到足夠資料（例如相關頁面少於 3 頁），直接停止並回報，嚴禁 AI 用預訓練知識硬湊（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.2）。</p>
 <p>這條規則同時防止幻覺與「偷懶」：AI 不會因為想交差而編造內容，也不會只用最前面的 3 篇來源就假裝讀完了 8 篇。</p>
@@ -299,7 +299,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>反模式</h2>
 <div class="table-wrap"><table><tr><th>反模式</th><th>問題</th><th>替代做法</th></tr><tr><td>沒有硬上限</td><td>無限重試，燒錢</td><td>設 3 輪上限</td></tr><tr><td>資料不足還硬做</td><td>幻覺、內容空洞</td><td>少於 3 篇就停</td></tr><tr><td>只看「有沒有在動」</td><td>把卡住誤判為有進展</td><td>用「錯誤數量是否下降」判斷</td></tr><tr><td>檢查腳本壞掉就跳過</td><td>以為通過，其實沒驗證</td><td>fail closed</td></tr><tr><td>停止後沒有報告</td><td>不知道為什麼停</td><td>附上機器可讀的檢查結果與錯誤清單</td></tr></table></div>
 <h2>教學用法</h2>
-<p>讓學生為自己的 Loop 寫一張「停止卡」：三個停止條件、每個條件的觸發方式、停止後要附什麼報告。學生通常會發現，自己原本只寫了「做到好為止」，這不是停止條件，而是沒有條件。</p>
+<p>讓學生為自己的 Loop 寫一張「停止卡」：三個停止條件、每個條件的觸發方式、停止後要附什麼報告。學生通常會發現，自己原本只寫了「做到好為止」，這等於沒有停止條件。</p>
 <h2>檢查清單</h2>
 <ul><li>[ ] 是否有硬上限（輪數、頁數、時間）？</li><li>[ ] 是否有資料不足的停止條件？</li><li>[ ] 是否有成本上限？</li><li>[ ] 是否用「進展」而不是「動作」判斷卡住？</li><li>[ ] 檢查腳本壞掉時是否 fail closed？</li><li>[ ] 停止後是否附報告？</li></ul>
 <h2>出處</h2>
@@ -311,7 +311,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <p>課程因此提出「嚴格的資訊與權限隔離」：每個節點只能看它需要的輸入，不能做超出職責的事（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.3(2)）。</p>
 <h2>課程的權限表</h2>
 <div class="table-wrap"><table><tr><th>流程節點</th><th>只能看什麼</th><th>絕對不能做什麼</th><th>為什麼</th></tr><tr><td><strong>證據卡（Cards）</strong></td><td>單一一篇論文的頁面</td><td>混入其他論文或外部來源</td><td>確保每張卡的數據與結論血統純正</td></tr><tr><td><strong>逐頁稿（Drafts）</strong></td><td>確認過的大綱 + 該頁對應的證據卡</td><td>引用證據卡以外的內容</td><td>杜絕自由發揮與幻覺</td></tr><tr><td><strong>渲染 HTML</strong></td><td>已通過忠實度審查的逐頁稿</td><td>修改逐頁稿裡的任何一個字</td><td>排版節點只負責視覺，不碰事實</td></tr><tr><td><strong>檢查關卡</strong></td><td>該階段成品 + 原始對照來源</td><td>檢查員自己動手改內容</td><td>球員不能兼裁判</td></tr></table></div>
-<p>這張表的重點是：<strong>每個節點的「不能做」和「能做」一樣重要</strong>。權限不是為了限制 AI 的能力，而是為了讓錯誤可以被定位。</p>
+<p>這張表的重點是：<strong>每個節點的「不能做」和「能做」一樣重要</strong>。權限劃清楚，出錯時才找得到是哪個節點的問題。</p>
 <h2>Gate：把關卡放在副作用發生處</h2>
 <p>Harness 的文章說得更極端：Gate 必須坐在副作用處；UI 強制的 gate 只是建議（<a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §七大原語）。意思是，如果一個動作會產生不可逆的副作用（送出郵件、push、部署、刪檔），就必須在動作發生的地方攔截，而不是只在介面上顯示警告。</p>
 <p>對簡報流程的啟示：</p>
@@ -334,7 +334,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>檢查清單</h2>
 <ul><li>[ ] 每個節點是否只拿到它需要的輸入？</li><li>[ ] 每個節點是否有明確的「不能做」清單？</li><li>[ ] 副作用是否在發生處設 Gate？</li><li>[ ] 檢查者是否只能產出報告，不能改內容？</li><li>[ ] 是否使用隔離的工作區，避免覆蓋使用者檔案？</li></ul>
 <h2>出處</h2>
-<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.3(2)</li><li><a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §七大原語、§BUILD 04、§BUILD 05</li><li><a href="#building-effective-ai-agents">Building Effective AI Agents（Anthropic）</a> §Appendix 2</li><li><a href="#self-improving-coding-loop">用 DeepSeek V4 Flash 在 Codex 建立自我改進編碼循環</a> §代理圖三大承諾</li></ul></section><section class="wiki-page" id="fallback-edges" data-title="退回邊與檢查前移：大圈少轉，小圈快轉"><div class="page-kicker">概念 · fallback-edges</div><h1 id="退回邊與檢查前移-大圈少轉-小圈快轉">退回邊與檢查前移：大圈少轉，小圈快轉</h1><blockquote>一句話：好的 Graph 不是沒有錯誤，而是錯誤在離源頭最近的地方被發現、被修掉。</blockquote>
+<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.3(2)</li><li><a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §七大原語、§BUILD 04、§BUILD 05</li><li><a href="#building-effective-ai-agents">Building Effective AI Agents（Anthropic）</a> §Appendix 2</li><li><a href="#self-improving-coding-loop">用 DeepSeek V4 Flash 在 Codex 建立自我改進編碼循環</a> §代理圖三大承諾</li></ul></section><section class="wiki-page" id="fallback-edges" data-title="退回邊與檢查前移：大圈少轉，小圈快轉"><div class="page-kicker">概念 · fallback-edges</div><h1 id="退回邊與檢查前移-大圈少轉-小圈快轉">退回邊與檢查前移：大圈少轉，小圈快轉</h1><blockquote>一句話：好的 Graph 一樣會出錯，差別在錯誤會在離源頭最近的地方被發現、被修掉。</blockquote>
 <h2>兩種迴圈：小圈與大圈</h2>
 <p>課程把 Graph 裡的迴圈分成兩種（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.3）：</p>
 <ul><li><strong>小圈（Local Loop）</strong>：在單一節點內部或相鄰節點之間快速修正。例如逐頁稿節點內部跑「寫一頁 → 檢查出處 → 修改」，最多 2 輪；渲染節點跑「產生 HTML → 截圖 → 修版面」，最多 3 輪。</li><li><strong>大圈（Global Fallback）</strong>：從最後一關一路退回最前面的起點。例如簡報做到第 12 頁才發現「整個主題選錯」或「來源少了關鍵論文」，只好退回檢索重做。</li></ul>
@@ -346,7 +346,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>檢查前移：為什麼要在大綱就抓錯</h2>
 <p>課程的核心診斷是：「錯誤必須在離源頭最近的地方被抓到。如果你的 Graph 常常在轉大圈，代表你的檢查關卡設得太後面了。」（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.3）</p>
 <p>例如：</p>
-<ul><li>如果等到 HTML 做完才發現「少讀了兩篇論文」，就要退回檢索、重抽卡、重寫大綱、重寫逐頁稿、重渲染——這是大圈。</li><li>如果在大綱階段就檢查覆蓋率，發現少兩篇，只要退回檢索補卡，再修大綱——這是小圈。</li></ul>
+<ul><li>如果等到 HTML 做完才發現「少讀了兩篇論文」，就要退回檢索、重抽卡、重寫大綱、重寫逐頁稿、重渲染，這是大圈。</li><li>如果在大綱階段就檢查覆蓋率，發現少兩篇，只要退回檢索補卡，再修大綱，這是小圈。</li></ul>
 <p>這就是「檢查前移」：把檢查從成品端移到決策端。越早發現，退回成本越低。</p>
 <h2>退回邊怎麼設計</h2>
 <p>設計退回邊時，問三個問題：</p>
@@ -379,7 +379,7 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>程式檢查：把主觀標準變成可執行規則</h2>
 <p>程式檢查的原則是：<strong>每一條規則都要能回答「哪裡錯、為什麼錯、怎麼修」</strong>。例如：</p>
 <ul><li>簡報頁數是否在 8–15 頁之間？</li><li>每一頁是否都有至少一個 wiki 引用與一個原始來源？</li><li>引用的 wiki 頁面檔案是否真的存在？</li><li>簡報上的百分比數字是否能在被引用的 wiki 頁找到？</li><li>用 headless browser 渲染後，是否有元素超出投影片邊界？</li><li>是否有外部 JS/CSS 依賴，導致離線或 GitHub Pages 失效？</li></ul>
-<p>本專案的 <code>scripts/check_deck.py</code> 與 <code>scripts/render_check.py</code> 就是這些規則的實作。檢查結果寫成 JSON，失敗時回傳非零退出碼，讓「通過」不是一句話，而是一個可重跑的結果。</p>
+<p>本專案的 <code>scripts/check_deck.py</code> 與 <code>scripts/render_check.py</code> 就是這些規則的實作。檢查結果寫成 JSON，失敗時回傳非零退出碼，讓「通過」變成一個可以重跑的結果。</p>
 <h2>獨立 AI 審查：新上下文、只看成品與來源</h2>
 <p>生成者會護航自己的產出；只有新上下文，才看得到自己的盲點。</p>
 <p>獨立審查的流程：</p>
@@ -388,10 +388,10 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>證據式前進：不要相信「我覺得完成了」</h2>
 <p>零信任的第一條規則是「僅基於證據前進」：程式碼、部署、測試通過才算進展；不要相信 agent 的文字描述，也不要把「執行完畢、退出碼 0」當成有做事（<a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §零信任五規則）。</p>
 <p>這條規則可以拆成三個實作：</p>
-<ul><li><strong>每個節點都有產出檔案</strong>：沒有檔案就沒有進展。</li><li><strong>每個檢查都有機器可讀的結果</strong>：不是「看起來可以」，而是 <code>pass: true</code>。</li><li><strong>每個失敗都有位置與理由</strong>：不是「再改好一點」，而是「第 6 頁的數字 37% 不在來源頁」。</li></ul>
+<ul><li><strong>每個節點都有產出檔案</strong>：沒有檔案就沒有進展。</li><li><strong>每個檢查都有機器可讀的結果</strong>，例如 <code>pass: true</code>。</li><li><strong>每個失敗都有位置與理由</strong>，例如「第 6 頁的數字 37% 不在來源頁」。</li></ul>
 <h2>驗證也要驗證自己：canary 與 fail closed</h2>
 <p>Harness 的工程文章提出一個很強的做法：沙箱要在啟動時用 canary 探針證明隔離，任一探針失敗就拒絕啟動，沒有降級模式（<a href="#agentic-harness-kimi-k3">How to Build An Agentic Harness using Kimi K3</a> §BUILD 05）。同樣的道理可以用在簡報檢查：如果檢查腳本自己壞掉，不能默默跳過，而要 fail closed，讓我們知道「這次沒有驗證」。</p>
-<p>另一個相關概念是「缺乏內建 eval 是 harness 的弱點」；課程提到 Hermes harness 需要自行整合 LangSmith/Langfuse 等觀測工具（<a href="#ai-agent-system-design-course">前 Google 工程師的 AI Agent 系統設計課</a> §Agent Harness、記憶體系）。這提醒我們：驗證不是附加功能，而是系統的一部分。</p>
+<p>另一個相關概念是「缺乏內建 eval 是 harness 的弱點」；課程提到 Hermes harness 需要自行整合 LangSmith/Langfuse 等觀測工具（<a href="#ai-agent-system-design-course">前 Google 工程師的 AI Agent 系統設計課</a> §Agent Harness、記憶體系）。所以驗證要在設計系統時就放進去，事後再補會很難。</p>
 <h2>反模式</h2>
 <div class="table-wrap"><table><tr><th>反模式</th><th>問題</th><th>替代做法</th></tr><tr><td>生成者自己審自己</td><td>自我護航、盲點</td><td>新上下文獨立審查</td></tr><tr><td>只寫「請檢查」</td><td>沒有標準，無法重跑</td><td>寫成可執行規則與檢查清單</td></tr><tr><td>只看最終成品</td><td>錯誤太晚才發現，退回成本高</td><td>在證據卡、大綱、逐頁稿就設關卡</td></tr><tr><td>檢查腳本壞掉就跳過</td><td>以為通過，其實沒驗證</td><td>fail closed，腳本錯誤視為失敗</td></tr><tr><td>只檢查格式，不檢查語意</td><td>版面漂亮但內容講反</td><td>程式檢查 + 獨立 AI 審查</td></tr></table></div>
 <h2>本專案的驗證設計</h2>
@@ -436,10 +436,10 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>檢查清單</h2>
 <ul><li>[ ] 這個任務會做幾次？</li><li>[ ] 修正指令是否每次都差不多？</li><li>[ ] 是否有多個階段、不同驗收標準？</li><li>[ ] 是否需要精準退回？</li><li>[ ] 是否先用最簡單的結構，真的不夠才升級？</li></ul>
 <h2>出處</h2>
-<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.3、§5.3</li><li><a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph</li><li><a href="#building-effective-ai-agents">Building Effective AI Agents（Anthropic）</a> §When (and when not) to use agents</li><li><a href="#ai-agent-system-design-course">前 Google 工程師的 AI Agent 系統設計課</a> §第四階段</li></ul></section><section class="wiki-page" id="llm-wiki" data-title="LLM Wiki 的建置方法：給 AI 讀的知識庫"><div class="page-kicker">方法 · llm-wiki</div><h1 id="llm-wiki-的建置方法-給-ai-讀的知識庫">LLM Wiki 的建置方法：給 AI 讀的知識庫</h1><blockquote>一句話：LLM Wiki 不是給人看的百科全書，而是給 AI 檢索的結構化記憶。</blockquote>
+<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §3.3、§5.3</li><li><a href="#agentic-workflow-humaneval">Agentic workflow 讓 GPT-3.5 在 HumanEval 達到 95.1%</a> §Harness、Loop 與 Graph</li><li><a href="#building-effective-ai-agents">Building Effective AI Agents（Anthropic）</a> §When (and when not) to use agents</li><li><a href="#ai-agent-system-design-course">前 Google 工程師的 AI Agent 系統設計課</a> §第四階段</li></ul></section><section class="wiki-page" id="llm-wiki" data-title="LLM Wiki 的建置方法：給 AI 讀的知識庫"><div class="page-kicker">方法 · llm-wiki</div><h1 id="llm-wiki-的建置方法-給-ai-讀的知識庫">LLM Wiki 的建置方法：給 AI 讀的知識庫</h1><blockquote>一句話：LLM Wiki 是給 AI 檢索的結構化記憶，人讀起來順不順是其次。</blockquote>
 <h2>什麼是 LLM Wiki</h2>
 <p>課程引用 Andrej Karpathy 的 LLM Wiki 構想：它是一種 Context Engineering 的實踐，作用類似 RAG，但不需要先架設向量資料庫與 embedding 切塊程式（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §4.1）。</p>
-<p>LLM Wiki 的重點不是「寫得很漂亮」，而是「讓 AI 能快速找到正確的頁面、正確的段落、正確的出處」。因此它的結構比文筆重要：</p>
+<p>LLM Wiki 的重點是讓 AI 能快速找到正確的頁面、段落與出處，所以結構比文筆重要：</p>
 <ul><li><code>index.md</code> 是檢索入口，列出所有頁面與主題。</li><li><code>sources/</code> 一篇來源一頁，保留原始 URL 與可引用主張。</li><li><code>concepts/</code> 跨來源綜整概念，每個事實都連回來源。</li><li><code>comparisons/</code> 並陳不同做法，幫助選擇。</li><li><code>methods/</code> 記錄可重複的流程。</li><li><code>glossary.md</code> 統一術語。</li><li><code>log.md</code> 記錄何時 ingest 了什麼、改了哪些頁。</li></ul>
 <h2>為什麼要「先討論、後生成」</h2>
 <p>課程比較了兩種建 Wiki 的方式（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §4.1）：</p>
@@ -471,12 +471,12 @@ hr{border:0;border-top:1px solid var(--line);margin:26px 0}
 <h2>檢查清單</h2>
 <ul><li>[ ] 是否有 <code>index.md</code>、<code>log.md</code>、<code>sources/</code>、<code>concepts/</code>？</li><li>[ ] 每篇來源是否有 <code>original_url</code> 與 <code>raw_file</code>？</li><li>[ ] 每個事實是否有引用？</li><li>[ ] 數字是否能在來源頁找到？</li><li>[ ] 衝突是否並陳？</li><li>[ ] lint 是否 0 error？</li></ul>
 <h2>出處</h2>
-<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §4.1、§4.2、§4.3</li></ul></section><section class="wiki-page" id="teaching-deck-pipeline" data-title="本專案的 Graph：從 Wiki 到 13 頁教學簡報"><div class="page-kicker">方法 · teaching-deck-pipeline</div><h1 id="本專案的-graph-從-wiki-到-13-頁教學簡報">本專案的 Graph：從 Wiki 到 13 頁教學簡報</h1><blockquote>一句話：這份簡報不是「一句話生成」，而是 7 個節點、5 個關卡、3 輪檢查的產物。</blockquote>
+<ul><li><a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §4.1、§4.2、§4.3</li></ul></section><section class="wiki-page" id="teaching-deck-pipeline" data-title="本專案的 Graph：從 Wiki 到 13 頁教學簡報"><div class="page-kicker">方法 · teaching-deck-pipeline</div><h1 id="本專案的-graph-從-wiki-到-13-頁教學簡報">本專案的 Graph：從 Wiki 到 13 頁教學簡報</h1><blockquote>一句話：這份簡報經過 7 個節點、5 個關卡、3 輪檢查才完成。</blockquote>
 <h2>為什麼不用一句話 Prompt</h2>
-<p>一句話 Prompt 也能生出 HTML，但常見的結果是：排版爆版、數字沒出處、只讀了部分來源、把結論講反（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.1）。這些問題不是模型不夠強，而是沒有把「檢索、整理、檢查、退回」寫進流程。</p>
+<p>一句話 Prompt 也能生出 HTML，但常見的結果是：排版爆版、數字沒出處、只讀了部分來源、把結論講反（<a href="#week10-lecture">Week 10 課程筆記：把你的工作拆成 AI 能做的流程</a> §5.1）。原因是流程裡沒有寫進「檢索、整理、檢查、退回」這幾步。</p>
 <p>因此本專案採用 Graph 版：先把 Wiki 建好，再用 7 個節點生成簡報；每個節點都有明確的輸入、輸出與檢查。</p>
 <h2>七個節點</h2>
-<div class="table-wrap"><table><tr><th>節點</th><th>做什麼</th><th>產出</th><th>檢查</th><th>退回</th></tr><tr><td><strong>N1 檢索</strong></td><td>依主題查 Wiki 索引，列出相關頁面與覆蓋率</td><td>檢索結果與覆蓋率</td><td>相關頁 ≥ 3</td><td>不足 → 停止</td></tr><tr><td><strong>N2 證據卡</strong></td><td>每篇來源抽一張卡，只放該篇的原文與位置</td><td>每篇來源一張證據卡</td><td>每卡有 URL、≥ 2 條原文</td><td>卡錯 → 重抽該篇</td></tr><tr><td><strong>N3 大綱</strong></td><td>排教學順序，標記每頁要用的 Wiki 頁</td><td>大綱與人類確認紀錄</td><td>人類確認；每頁 ≥ 1 個 Wiki 頁</td><td>缺子題 → 回 N1/N3</td></tr><tr><td><strong>N4 逐頁稿</strong></td><td>一頁一稿，寫標題、主張、例子、出處</td><td>每頁一份逐頁稿</td><td>每頁有出處；數字可回溯</td><td>某頁錯 → 只改該頁</td></tr><tr><td><strong>N5 渲染</strong></td><td>由 <code>deck/slides.json</code> 產生 <code>index.html</code></td><td><code>index.html</code></td><td>8–15 頁；無外部依賴</td><td>版面錯 → 回 N4 刪字</td></tr><tr><td><strong>N6 驗證</strong></td><td>程式檢查 + 獨立 AI 審查</td><td>機器可讀檢查結果、獨立審查報告</td><td>全過</td><td>fail → 退回對應節點</td></tr><tr><td><strong>N7 交件</strong></td><td>整理報告、部署</td><td>檢查報告、繳交文字</td><td>人類最終驗收</td><td>—</td></tr></table></div>
+<div class="table-wrap"><table><tr><th>節點</th><th>做什麼</th><th>產出</th><th>檢查</th><th>退回</th></tr><tr><td><strong>N1 檢索</strong></td><td>依主題查 Wiki 索引，列出相關頁面與覆蓋率</td><td>檢索結果與覆蓋率</td><td>相關頁 ≥ 3</td><td>不足 → 停止</td></tr><tr><td><strong>N2 證據卡</strong></td><td>每篇來源抽一張卡，只放該篇的原文與位置</td><td>每篇來源一張證據卡</td><td>每卡有 URL、≥ 2 條原文</td><td>卡錯 → 重抽該篇</td></tr><tr><td><strong>N3 大綱</strong></td><td>排教學順序，標記每頁要用的 Wiki 頁</td><td>大綱與人類確認紀錄</td><td>人類確認；每頁 ≥ 1 個 Wiki 頁</td><td>缺子題 → 回 N1/N3</td></tr><tr><td><strong>N4 逐頁稿</strong></td><td>一頁一稿，寫標題、主張、例子、出處</td><td>每頁一份逐頁稿</td><td>每頁有出處；數字可回溯</td><td>某頁錯 → 只改該頁</td></tr><tr><td><strong>N5 渲染</strong></td><td>由 <code>deck/slides.json</code> 產生 <code>index.html</code></td><td><code>index.html</code></td><td>8–15 頁；無外部依賴；headless 渲染無 overflow</td><td>版面錯 → 回 N4 刪字</td></tr><tr><td><strong>N6 獨立審查</strong></td><td>開新對話，只看成品與被引用的來源</td><td>獨立審查報告</td><td>忠實度、覆蓋率全過</td><td>fail → 退回 N2 補卡或 N4 改該頁</td></tr><tr><td><strong>N7 交件</strong></td><td>整理報告、部署</td><td>檢查報告、繳交文字</td><td>人類最終驗收</td><td>—</td></tr></table></div>
 <h2>五個關卡</h2>
 <pre class="code"><code>G1 覆蓋率：相關 wiki 頁 &lt; 3 → 停止
 G2 大綱：人類確認教學順序與取捨
@@ -505,7 +505,7 @@ G5 獨立審查：新上下文檢查忠實度與覆蓋率</code></pre>
 <div class="table-wrap"><table><tr><th>項目</th><th>結果</th></tr><tr><td>來源數</td><td>7 篇（week 10 課程筆記 + week 9 的 6 篇 AI 閱讀筆記）</td></tr><tr><td>Wiki 頁面</td><td>22 頁（7 來源、9 概念、1 比較、2 方法、index、log、glossary）</td></tr><tr><td>簡報頁數</td><td>13 頁</td></tr><tr><td>程式檢查</td><td><code>check_wiki.py</code>、<code>check_deck.py</code>、<code>render_check.py</code> 全數通過</td></tr><tr><td>渲染檢查</td><td>13 頁，0 overflow，0 缺引用</td></tr><tr><td>獨立審查</td><td>忠實度、覆蓋率、教學結構、引用完整性、版面可讀性通過</td></tr><tr><td>修改輪數</td><td>3 輪（第 1 輪 2 個 overflow、第 2 輪 2 個視覺重疊、第 3 輪 0 個）</td></tr></table></div>
 <blockquote>這張表會在實際執行後更新；若數字與機器可讀的檢查結果不一致，以檢查結果為準。</blockquote>
 <h2>實際抓到的錯誤（摘要）</h2>
-<ol><li>第 1 輪：封面 overflow 10px、Loop 頁 overflow 63px；0 頁缺引用。同一天 Wiki 檢查也抓出 16 個結構問題（2 個簡體字、7 個來源頁缺 <code>updated</code>、3 個範例連結誤判、1 個方法頁來源數不足、2 個佔位標記）。</li><li>第 2 輪：overflow 歸零；視覺檢查抓到 HUD 覆蓋引用 chips、pipeline 退回標籤壓到節點。</li><li>第 3 輪：程式檢查與渲染檢查全過；進入獨立審查。</li></ol>
+<ol><li>第 1 輪：封面 overflow 10px、Loop 頁 overflow 63px；0 頁缺引用。渲染之前，Wiki 檢查已先抓出並修掉 16 個結構問題（2 個簡體字、7 個來源頁缺 <code>updated</code>、3 個範例連結誤判、1 個方法頁來源數不足、2 個佔位標記）。</li><li>第 2 輪：overflow 歸零；視覺檢查抓到 HUD 覆蓋引用 chips、pipeline 退回標籤壓到節點。</li><li>第 3 輪：程式檢查與渲染檢查全過；進入獨立審查。</li></ol>
 <p>完整的錯誤、修正與驗證紀錄保留在執行報告。</p>
 <h2>與 Loop 版的差別</h2>
 <div class="table-wrap"><table><tr><th>維度</th><th>Loop 版</th><th>本專案 Graph 版</th></tr><tr><td>修正範圍</td><td>整份簡報重跑</td><td>只退回出錯的節點</td></tr><tr><td>檢查位置</td><td>主要在成品端</td><td>證據卡、大綱、逐頁稿、渲染都有</td></tr><tr><td>人類介入</td><td>最後看報告</td><td>大綱與最終驗收</td></tr><tr><td>成本</td><td>較低，但大圈很貴</td><td>設計成本較高，但小圈便宜</td></tr><tr><td>適合</td><td>標準明確的重複性任務</td><td>多階段、需精準退回的教學簡報</td></tr></table></div>
@@ -566,7 +566,7 @@ G5 獨立審查：新上下文檢查忠實度與覆蓋率</code></pre>
 <h2>原始出處</h2>
 <ul><li>課程影片：&lt;https://www.youtube.com/live/pEmuTl9vTf8&gt;</li><li>第 10 週講義：&lt;https://drive.google.com/file/d/15qN58f28Hxfl0v32z_Nbw2C3F6sEEjr8/view&gt;</li><li>前導講義：&lt;https://drive.google.com/file/d/1AbrgG4TOrNCFhvKWFABzjfwV1KXXR0yB/view&gt;</li></ul></section><section class="wiki-page" id="ai-agent-system-design-course" data-title="前 Google 工程師的 AI Agent 系統設計課"><div class="page-kicker">來源 · ai-agent-system-design-course</div><h1 id="前-google-工程師的-ai-agent-系統設計課">前 Google 工程師的 AI Agent 系統設計課</h1><h2>這篇在說什麼</h2>
 <p>這是一堂約 3 小時的 AI agent 系統設計課的筆記，從 RAG 基礎、多 agent 架構、記憶體系，一路講到 Loop/Graph 工程化、LLM Ops 評估閉環與開源專案部署。課程把 agent 的演進整理成一個階梯：Prompt Engineering → Context Engineering → Skills/Procedural Memory → Loop → Graph。</p>
-<p>對本 Wiki 最重要的是兩點：第一，Loop 與 Graph 不是互相取代，而是互補——Loop 適合探索性任務（例如 Deep Research），Graph 適合 SOP 固定的企業流程。第二，Graph 的節點可以是確定性的程式，也可以是非確定性的 LLM 呼叫；因此需要 LLM routing 的邊與 guards 的防護。</p>
+<p>對本 Wiki 最重要的是兩點：第一，Loop 與 Graph 互補：Loop 適合探索性任務（例如 Deep Research），Graph 適合 SOP 固定的企業流程。第二，Graph 的節點可以是確定性的程式，也可以是非確定性的 LLM 呼叫；因此需要 LLM routing 的邊與 guards 的防護。</p>
 <h2>關鍵主張（可引用）</h2>
 <div class="table-wrap"><table><tr><th>#</th><th>主張</th><th>原文位置</th><th>本 Wiki 用到的地方</th></tr><tr><td>1</td><td>Agent 工程演進階梯：Prompt → Context → Skills/Procedural Memory → Loop → Graph。</td><td>「第四階段：工程演進階梯」段</td><td><a href="#harness-loop-graph">Harness、Loop、Graph：三層工程的分工</a>、<a href="#prompt-loop-graph">Prompt、Loop、Graph 怎麼選？</a></td></tr><tr><td>2</td><td>Loop 適合探索性任務（Deep Research）；Graph 適合 SOP 固定的企業級流程。</td><td>同上</td><td><a href="#prompt-loop-graph">Prompt、Loop、Graph 怎麼選？</a></td></tr><tr><td>3</td><td>Graph 的節點包含非確定性 LLM 呼叫、LLM routing 的邊，並需要 guards 防護。</td><td>同上</td><td><a href="#graph-nodes-edges">Graph 的基本元素：節點、邊、條件邊、狀態</a>、<a href="#verification">雙軌驗證：程式檢查與獨立 AI 審查</a></td></tr><tr><td>4</td><td>Harness 注入四類記憶：程序記憶（技能）、語義/耐久事實、事件記憶、工作記憶。</td><td>「Agent Harness、記憶體系」段</td><td><a href="#harness-loop-graph">Harness、Loop、Graph：三層工程的分工</a></td></tr><tr><td>5</td><td>Hermes harness 用 <code>soul.md</code>、<code>Skills/*.md</code>、<code>memory.md</code>、<code>state.db</code> 管理記憶，並以錯誤/重複任務蒸餾更新技能。</td><td>同上</td><td><a href="#state-as-files">State as Files：資料夾就是流程的記憶體</a></td></tr><tr><td>6</td><td>缺乏內建 eval 是這類 harness 的弱點，需自行整合 LangSmith/Langfuse 等觀測工具。</td><td>同上</td><td><a href="#verification">雙軌驗證：程式檢查與獨立 AI 審查</a></td></tr></table></div>
 <h2>本 Wiki 用到的地方</h2>
@@ -575,8 +575,8 @@ G5 獨立審查：新上下文檢查忠實度與覆蓋率</code></pre>
 <ul><li>這是課程筆記的二手整理，課程中的產品與 GitHub 星數可能隨時間變動；本 Wiki 不引用會過期的數字。</li><li>「Loop 適合探索、Graph 適合 SOP」是教學上的簡化；實務上常見 Graph 內含 Loop 的混合結構。</li><li>本 Wiki 沒有實際安裝 Hermes 或 waku-agent，只引用其記憶與 graph 設計概念。</li></ul>
 <h2>原始出處</h2>
 <ul><li>課程來源貼文：&lt;https://x.com/LunarResearcher/status/2084984207495827776&gt;</li></ul></section><section class="wiki-page" id="self-improving-coding-loop" data-title="用 DeepSeek V4 Flash 在 Codex 建立自我改進編碼循環"><div class="page-kicker">來源 · self-improving-coding-loop</div><h1 id="用-deepseek-v4-flash-在-codex-建立自我改進編碼循環">用 DeepSeek V4 Flash 在 Codex 建立自我改進編碼循環</h1><h2>這篇在說什麼</h2>
-<p>這篇筆記整理兩件事：第一，如何在 Codex 裡用三個模型建立自我改進的編碼循環——DEEPSEEK 執行任務、LUNA 評估並寫入 <code>log.md</code>、SOL 依評估重寫 <code>prompt.md</code>；並用 <code>watcher.md</code> 與 <code>rewriter.md</code> 限制程式碼不超過 12 行、prompt 增長不超過 20%。第二，一套 10 週的 Graph Architect 課程，涵蓋知識圖譜、實體解析、代理圖設計與作品集。</p>
-<p>對本 Wiki 最重要的是「迴圈要有紀錄與預算」：<code>log.md</code> 是評估紀錄，<code>prompt.md</code> 是下一輪的輸入，<code>watcher.md</code> / <code>rewriter.md</code> 是防止迴圈失控的規則。這正是 Loop Engineering 的具體樣貌：不是無盡重試，而是每一輪都留下可檢查的狀態。</p>
+<p>這篇筆記整理兩件事：第一，如何在 Codex 裡用三個模型建立自我改進的編碼循環：DEEPSEEK 執行任務、LUNA 評估並寫入 <code>log.md</code>、SOL 依評估重寫 <code>prompt.md</code>；並用 <code>watcher.md</code> 與 <code>rewriter.md</code> 限制程式碼不超過 12 行、prompt 增長不超過 20%。第二，一套 10 週的 Graph Architect 課程，涵蓋知識圖譜、實體解析、代理圖設計與作品集。</p>
+<p>對本 Wiki 最重要的是「迴圈要有紀錄與預算」：<code>log.md</code> 是評估紀錄，<code>prompt.md</code> 是下一輪的輸入，<code>watcher.md</code> / <code>rewriter.md</code> 是防止迴圈失控的規則。放到 Loop Engineering 來看，就是每一輪都留下可檢查的狀態，再加上預算上限，迴圈才不會變成無盡重試。</p>
 <h2>關鍵主張（可引用）</h2>
 <div class="table-wrap"><table><tr><th>#</th><th>主張</th><th>原文位置</th><th>本 Wiki 用到的地方</th></tr><tr><td>1</td><td>三模型循環：DEEPSEEK 執行、LUNA 評估並寫 <code>log.md</code>、SOL 依評估重寫 <code>prompt.md</code>。</td><td>「自我改進編碼循環」段</td><td><a href="#loop-five-elements">Loop 的五個要素：目標、限制、驗證、剎車、觸發</a>、<a href="#verification">雙軌驗證：程式檢查與獨立 AI 審查</a></td></tr><tr><td>2</td><td><code>watcher.md</code> 與 <code>rewriter.md</code> 限制程式碼 ≤ 12 行、prompt 增長 ≤ 20%，用預算防止迴圈失控。</td><td>同上</td><td><a href="#stop-conditions">停止條件：沒有剎車的 Loop 只是燒錢</a></td></tr><tr><td>3</td><td>把 Opus 5 換成 DeepSeek v4-flash，在不犧牲品質的前提下降低自動迭代的成本。</td><td>同上</td><td><a href="#stop-conditions">停止條件：沒有剎車的 Loop 只是燒錢</a></td></tr><tr><td>4</td><td>Graph Architect 的知識圖譜四階段：Extract、Resolve、Assemble、Query；實體解析是最被低估的步驟。</td><td>「知識圖譜四階段」段</td><td><a href="#graph-nodes-edges">Graph 的基本元素：節點、邊、條件邊、狀態</a></td></tr><tr><td>5</td><td>代理圖三大承諾：不可變計畫、分離層級、嚴格升級；用可審計性換取靈活度。</td><td>「代理圖三大承諾」段</td><td><a href="#information-scoping">資訊與權限隔離：每個節點只能看它該看的</a>、<a href="#stop-conditions">停止條件：沒有剎車的 Loop 只是燒錢</a></td></tr><tr><td>6</td><td>作品集的價值不在複雜度，而在誠實記錄失敗模式；從第 1 週起建立錯誤日誌。</td><td>「作品集」與「錯誤日誌」段</td><td><a href="#teaching-deck-pipeline">本專案的 Graph：從 Wiki 到 13 頁教學簡報</a> 的反思</td></tr></table></div>
 <h2>本 Wiki 用到的地方</h2>
@@ -598,7 +598,7 @@ G5 獨立審查：新上下文檢查忠實度與覆蓋率</code></pre>
 <ul><li><code>python scripts/check_wiki.py</code>：PASS（22 頁、7 來源、0 error、0 warning）。</li><li><code>python scripts/check_deck.py</code>：PASS（13 頁、每頁有 Wiki 與原始來源、0 error）。</li><li><code>python scripts/render_check.py --shots</code>：PASS（0 overflow、0 缺引用、13 張截圖）。</li><li>獨立 AI 審查：PASS（忠實度、覆蓋率、教學結構、引用完整性、版面可讀性）。</li></ul>
 <p>以上結果取自最後一次完整執行。</p>
 <h2>變更紀錄</h2>
-<div class="table-wrap"><table><tr><th>日期</th><th>變更</th><th>原因</th></tr><tr><td>2026-11-13</td><td>建立 Wiki 骨架與 7 篇來源頁</td><td>week 10 作業要求</td></tr><tr><td>2026-11-13</td><td>建立 9 篇概念頁、1 篇比較頁、2 篇方法頁</td><td>綜整跨來源知識</td></tr><tr><td>2026-11-13</td><td>建立專案手冊、簡報 Skill 與 Graph workflow</td><td>先討論、後生成</td></tr></table></div></section>
+<div class="table-wrap"><table><tr><th>日期</th><th>變更</th><th>原因</th></tr><tr><td>2026-11-13</td><td>建立 Wiki 骨架與 7 篇來源頁</td><td>week 10 作業要求</td></tr><tr><td>2026-11-13</td><td>建立 9 篇概念頁、1 篇比較頁、2 篇方法頁</td><td>綜整跨來源知識</td></tr><tr><td>2026-11-13</td><td>建立專案手冊、簡報 Skill 與 Graph workflow</td><td>先討論、後生成</td></tr><tr><td>2026-11-20</td><td>統一 Graph 為 7 個節點（N6 獨立審查、N7 交件），改寫重複句型</td><td>簡報第 6 頁與 Wiki、繳交稿的節點數不一致</td></tr></table></div></section>
     </main>
   </div>
   <script>

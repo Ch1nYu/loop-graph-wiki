@@ -3,7 +3,7 @@ id: human-in-the-loop
 title: "Human-in-the-loop：人類該在哪一關介入"
 type: concept
 audience: beginner
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, langgraph-agents-course, agentic-harness-kimi-k3]
 related: [loop-five-elements, information-scoping, verification]
 ---
@@ -16,7 +16,7 @@ related: [loop-five-elements, information-scoping, verification]
 
 課程一開始描述的痛點是：人類交辦任務、AI 產出、人類檢查、人類再下指令、AI 再改……在這個模式裡，人類自己變成了那個不斷重複檢查與催促的迴圈（[[sources/week10-lecture]] §1.2）。
 
-Human-in-the-loop 的目標不是「人類什麼都不管」，而是把人類的注意力放在**槓桿最高的決策點**：需求摘要、大綱、最終驗收。其他時候，讓人類只看報告。
+Human-in-the-loop 的目標是把人類的注意力放在**槓桿最高的決策點**：需求摘要、大綱、最終驗收。其他時候，讓人類只看報告。
 
 ## 三個高槓桿介入點
 
@@ -43,8 +43,8 @@ Harness 的文章提醒：UI 強制的 gate 只是建議，真正的 Gate 要坐
 
 對本專案的啟示：
 
-- 大綱確認不是「在文件裡寫一句『已確認』」，而是大綱檔裡有明確的確認紀錄與時間。
-- 交件不是「AI 說可以交」，而是所有程式檢查全過、獨立審查通過。
+- 大綱確認：大綱檔裡要有明確的確認紀錄與時間，只寫一句「已確認」不算。
+- 交件：所有程式檢查全過、獨立審查通過才能交，AI 自己說可以交不算數。
 
 ## 人類介入的成本
 

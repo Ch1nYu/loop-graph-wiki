@@ -3,14 +3,14 @@ id: loop-five-elements
 title: "Loop 的五個要素：目標、限制、驗證、剎車、觸發"
 type: concept
 audience: beginner
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, agentic-workflow-humaneval, building-effective-ai-agents, self-improving-coding-loop, langgraph-agents-course]
 related: [harness-loop-graph, verification, stop-conditions]
 ---
 
 # Loop 的五個要素：目標、限制、驗證、剎車、觸發
 
-> 一句話：Loop 不是「一直試」，而是「一份會自己判斷下一步的規格」。
+> 一句話：Loop 是一份會自己判斷下一步的規格。
 
 ## 為什麼需要五個要素
 
@@ -98,7 +98,7 @@ Anthropic 的 evaluator-optimizer 模式也是同一個思路：一個 LLM 生�
 
 用「請 AI 做一份簡報」當反例，讓學生列出：目標是什麼？限制是什麼？怎麼驗收？什麼時候停？誰來觸發？通常學生會發現自己只寫了目標，其他四項都沒寫。接著把五要素補齊，再比較「有 Loop」與「沒 Loop」的差異。
 
-如果學生寫不出這張表，通常不是 AI 不夠強，而是還沒決定「完成」長什麼樣子。
+如果學生寫不出這張表，通常代表還沒決定「完成」長什麼樣子，換更強的模型也幫不上忙。
 
 ## 檢查清單
 

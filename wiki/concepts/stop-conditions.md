@@ -3,7 +3,7 @@ id: stop-conditions
 title: "停止條件：沒有剎車的 Loop 只是燒錢"
 type: concept
 audience: beginner
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, agentic-workflow-humaneval, agentic-harness-kimi-k3, self-improving-coding-loop, building-effective-ai-agents]
 related: [loop-five-elements, verification, fallback-edges]
 ---
@@ -24,7 +24,7 @@ related: [loop-five-elements, verification, fallback-edges]
 
 最簡單也最可靠：最多改 3 輪（或 5 輪）。改滿就停，附上報告請人類處理。
 
-課程的建議是：如果改了 3 輪還沒通過，代表問題出在規格或資料，應立即停下來讓人類介入（[[sources/week10-lecture]] §3.2）。這個數字不是魔法，而是一個「不要再自動燒錢」的界線。
+課程的建議是：如果改了 3 輪還沒通過，代表問題出在規格或資料，應立即停下來讓人類介入（[[sources/week10-lecture]] §3.2）。3 輪是一條經驗上的界線：超過就不要再自動燒錢。
 
 ### 2. 資料不足就停（Stop on Insufficient Data）
 
@@ -96,7 +96,7 @@ Harness 的文章提出 Detector：用「明確缺乏進展」判斷卡住，而
 
 ## 教學用法
 
-讓學生為自己的 Loop 寫一張「停止卡」：三個停止條件、每個條件的觸發方式、停止後要附什麼報告。學生通常會發現，自己原本只寫了「做到好為止」，這不是停止條件，而是沒有條件。
+讓學生為自己的 Loop 寫一張「停止卡」：三個停止條件、每個條件的觸發方式、停止後要附什麼報告。學生通常會發現，自己原本只寫了「做到好為止」，這等於沒有停止條件。
 
 ## 檢查清單
 

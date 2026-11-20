@@ -3,7 +3,7 @@ id: verification
 title: "雙軌驗證：程式檢查與獨立 AI 審查"
 type: concept
 audience: beginner
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, agentic-workflow-humaneval, building-effective-ai-agents, agentic-harness-kimi-k3, ai-agent-system-design-course]
 related: [loop-five-elements, stop-conditions, information-scoping]
 ---
@@ -38,7 +38,7 @@ related: [loop-five-elements, stop-conditions, information-scoping]
 - 用 headless browser 渲染後，是否有元素超出投影片邊界？
 - 是否有外部 JS/CSS 依賴，導致離線或 GitHub Pages 失效？
 
-本專案的 `scripts/check_deck.py` 與 `scripts/render_check.py` 就是這些規則的實作。檢查結果寫成 JSON，失敗時回傳非零退出碼，讓「通過」不是一句話，而是一個可重跑的結果。
+本專案的 `scripts/check_deck.py` 與 `scripts/render_check.py` 就是這些規則的實作。檢查結果寫成 JSON，失敗時回傳非零退出碼，讓「通過」變成一個可以重跑的結果。
 
 ## 獨立 AI 審查：新上下文、只看成品與來源
 
@@ -61,14 +61,14 @@ related: [loop-five-elements, stop-conditions, information-scoping]
 這條規則可以拆成三個實作：
 
 - **每個節點都有產出檔案**：沒有檔案就沒有進展。
-- **每個檢查都有機器可讀的結果**：不是「看起來可以」，而是 `pass: true`。
-- **每個失敗都有位置與理由**：不是「再改好一點」，而是「第 6 頁的數字 37% 不在來源頁」。
+- **每個檢查都有機器可讀的結果**，例如 `pass: true`。
+- **每個失敗都有位置與理由**，例如「第 6 頁的數字 37% 不在來源頁」。
 
 ## 驗證也要驗證自己：canary 與 fail closed
 
 Harness 的工程文章提出一個很強的做法：沙箱要在啟動時用 canary 探針證明隔離，任一探針失敗就拒絕啟動，沒有降級模式（[[sources/agentic-harness-kimi-k3]] §BUILD 05）。同樣的道理可以用在簡報檢查：如果檢查腳本自己壞掉，不能默默跳過，而要 fail closed，讓我們知道「這次沒有驗證」。
 
-另一個相關概念是「缺乏內建 eval 是 harness 的弱點」；課程提到 Hermes harness 需要自行整合 LangSmith/Langfuse 等觀測工具（[[sources/ai-agent-system-design-course]] §Agent Harness、記憶體系）。這提醒我們：驗證不是附加功能，而是系統的一部分。
+另一個相關概念是「缺乏內建 eval 是 harness 的弱點」；課程提到 Hermes harness 需要自行整合 LangSmith/Langfuse 等觀測工具（[[sources/ai-agent-system-design-course]] §Agent Harness、記憶體系）。所以驗證要在設計系統時就放進去，事後再補會很難。
 
 ## 反模式
 

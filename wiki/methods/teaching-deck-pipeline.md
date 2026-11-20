@@ -3,18 +3,18 @@ id: teaching-deck-pipeline
 title: "本專案的 Graph：從 Wiki 到 13 頁教學簡報"
 type: method
 audience: intermediate
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, agentic-workflow-humaneval, langgraph-agents-course, agentic-harness-kimi-k3]
 related: [graph-nodes-edges, fallback-edges, verification, state-as-files]
 ---
 
 # 本專案的 Graph：從 Wiki 到 13 頁教學簡報
 
-> 一句話：這份簡報不是「一句話生成」，而是 7 個節點、5 個關卡、3 輪檢查的產物。
+> 一句話：這份簡報經過 7 個節點、5 個關卡、3 輪檢查才完成。
 
 ## 為什麼不用一句話 Prompt
 
-一句話 Prompt 也能生出 HTML，但常見的結果是：排版爆版、數字沒出處、只讀了部分來源、把結論講反（[[sources/week10-lecture]] §5.1）。這些問題不是模型不夠強，而是沒有把「檢索、整理、檢查、退回」寫進流程。
+一句話 Prompt 也能生出 HTML，但常見的結果是：排版爆版、數字沒出處、只讀了部分來源、把結論講反（[[sources/week10-lecture]] §5.1）。原因是流程裡沒有寫進「檢索、整理、檢查、退回」這幾步。
 
 因此本專案採用 Graph 版：先把 Wiki 建好，再用 7 個節點生成簡報；每個節點都有明確的輸入、輸出與檢查。
 
@@ -26,8 +26,8 @@ related: [graph-nodes-edges, fallback-edges, verification, state-as-files]
 | **N2 證據卡** | 每篇來源抽一張卡，只放該篇的原文與位置 | 每篇來源一張證據卡 | 每卡有 URL、≥ 2 條原文 | 卡錯 → 重抽該篇 |
 | **N3 大綱** | 排教學順序，標記每頁要用的 Wiki 頁 | 大綱與人類確認紀錄 | 人類確認；每頁 ≥ 1 個 Wiki 頁 | 缺子題 → 回 N1/N3 |
 | **N4 逐頁稿** | 一頁一稿，寫標題、主張、例子、出處 | 每頁一份逐頁稿 | 每頁有出處；數字可回溯 | 某頁錯 → 只改該頁 |
-| **N5 渲染** | 由 `deck/slides.json` 產生 `index.html` | `index.html` | 8–15 頁；無外部依賴 | 版面錯 → 回 N4 刪字 |
-| **N6 驗證** | 程式檢查 + 獨立 AI 審查 | 機器可讀檢查結果、獨立審查報告 | 全過 | fail → 退回對應節點 |
+| **N5 渲染** | 由 `deck/slides.json` 產生 `index.html` | `index.html` | 8–15 頁；無外部依賴；headless 渲染無 overflow | 版面錯 → 回 N4 刪字 |
+| **N6 獨立審查** | 開新對話，只看成品與被引用的來源 | 獨立審查報告 | 忠實度、覆蓋率全過 | fail → 退回 N2 補卡或 N4 改該頁 |
 | **N7 交件** | 整理報告、部署 | 檢查報告、繳交文字 | 人類最終驗收 | — |
 
 ## 五個關卡
@@ -88,7 +88,7 @@ run/
 
 ## 實際抓到的錯誤（摘要）
 
-1. 第 1 輪：封面 overflow 10px、Loop 頁 overflow 63px；0 頁缺引用。同一天 Wiki 檢查也抓出 16 個結構問題（2 個簡體字、7 個來源頁缺 `updated`、3 個範例連結誤判、1 個方法頁來源數不足、2 個佔位標記）。
+1. 第 1 輪：封面 overflow 10px、Loop 頁 overflow 63px；0 頁缺引用。渲染之前，Wiki 檢查已先抓出並修掉 16 個結構問題（2 個簡體字、7 個來源頁缺 `updated`、3 個範例連結誤判、1 個方法頁來源數不足、2 個佔位標記）。
 2. 第 2 輪：overflow 歸零；視覺檢查抓到 HUD 覆蓋引用 chips、pipeline 退回標籤壓到節點。
 3. 第 3 輪：程式檢查與渲染檢查全過；進入獨立審查。
 

@@ -5,7 +5,7 @@ type: source
 source_kind: article-summary
 original_url: "https://x.com/cyrilXBT/status/2088542962854629672"
 ingested: 2026-11-13
-updated: 2026-11-13
+updated: 2026-11-20
 reliability: medium
 coverage: [loop, evaluator, log, prompt-rewrite, cost]
 ---
@@ -14,9 +14,9 @@ coverage: [loop, evaluator, log, prompt-rewrite, cost]
 
 ## 這篇在說什麼
 
-這篇筆記整理兩件事：第一，如何在 Codex 裡用三個模型建立自我改進的編碼循環——DEEPSEEK 執行任務、LUNA 評估並寫入 `log.md`、SOL 依評估重寫 `prompt.md`；並用 `watcher.md` 與 `rewriter.md` 限制程式碼不超過 12 行、prompt 增長不超過 20%。第二，一套 10 週的 Graph Architect 課程，涵蓋知識圖譜、實體解析、代理圖設計與作品集。
+這篇筆記整理兩件事：第一，如何在 Codex 裡用三個模型建立自我改進的編碼循環：DEEPSEEK 執行任務、LUNA 評估並寫入 `log.md`、SOL 依評估重寫 `prompt.md`；並用 `watcher.md` 與 `rewriter.md` 限制程式碼不超過 12 行、prompt 增長不超過 20%。第二，一套 10 週的 Graph Architect 課程，涵蓋知識圖譜、實體解析、代理圖設計與作品集。
 
-對本 Wiki 最重要的是「迴圈要有紀錄與預算」：`log.md` 是評估紀錄，`prompt.md` 是下一輪的輸入，`watcher.md` / `rewriter.md` 是防止迴圈失控的規則。這正是 Loop Engineering 的具體樣貌：不是無盡重試，而是每一輪都留下可檢查的狀態。
+對本 Wiki 最重要的是「迴圈要有紀錄與預算」：`log.md` 是評估紀錄，`prompt.md` 是下一輪的輸入，`watcher.md` / `rewriter.md` 是防止迴圈失控的規則。放到 Loop Engineering 來看，就是每一輪都留下可檢查的狀態，再加上預算上限，迴圈才不會變成無盡重試。
 
 ## 關鍵主張（可引用）
 

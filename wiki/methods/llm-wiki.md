@@ -3,20 +3,20 @@ id: llm-wiki
 title: "LLM Wiki 的建置方法：給 AI 讀的知識庫"
 type: method
 audience: beginner
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, ai-agent-system-design-course]
 related: [state-as-files, verification, teaching-deck-pipeline]
 ---
 
 # LLM Wiki 的建置方法：給 AI 讀的知識庫
 
-> 一句話：LLM Wiki 不是給人看的百科全書，而是給 AI 檢索的結構化記憶。
+> 一句話：LLM Wiki 是給 AI 檢索的結構化記憶，人讀起來順不順是其次。
 
 ## 什麼是 LLM Wiki
 
 課程引用 Andrej Karpathy 的 LLM Wiki 構想：它是一種 Context Engineering 的實踐，作用類似 RAG，但不需要先架設向量資料庫與 embedding 切塊程式（[[sources/week10-lecture]] §4.1）。
 
-LLM Wiki 的重點不是「寫得很漂亮」，而是「讓 AI 能快速找到正確的頁面、正確的段落、正確的出處」。因此它的結構比文筆重要：
+LLM Wiki 的重點是讓 AI 能快速找到正確的頁面、段落與出處，所以結構比文筆重要：
 
 - `index.md` 是檢索入口，列出所有頁面與主題。
 - `sources/` 一篇來源一頁，保留原始 URL 與可引用主張。

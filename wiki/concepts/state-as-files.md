@@ -3,7 +3,7 @@ id: state-as-files
 title: "State as Files：資料夾就是流程的記憶體"
 type: concept
 audience: intermediate
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, langgraph-agents-course, agentic-harness-kimi-k3, ai-agent-system-design-course]
 related: [graph-nodes-edges, information-scoping, verification]
 ---
@@ -32,7 +32,7 @@ run/
 ├── cards/                 # N2：每篇來源一張證據卡
 ├── outline.md             # N3：大綱（含人類確認紀錄）
 ├── drafts/                # N4：逐頁稿
-├── report.md              # N6：檢查與修正紀錄
+├── report.md              # N5–N7：檢查與修正紀錄
 └── review.md              # N6：獨立審查報告
 ```
 

@@ -3,7 +3,7 @@ id: information-scoping
 title: "資訊與權限隔離：每個節點只能看它該看的"
 type: concept
 audience: intermediate
-updated: 2026-11-13
+updated: 2026-11-20
 sources: [week10-lecture, agentic-harness-kimi-k3, building-effective-ai-agents, self-improving-coding-loop]
 related: [graph-nodes-edges, verification, state-as-files]
 ---
@@ -33,7 +33,7 @@ related: [graph-nodes-edges, verification, state-as-files]
 | **渲染 HTML** | 已通過忠實度審查的逐頁稿 | 修改逐頁稿裡的任何一個字 | 排版節點只負責視覺，不碰事實 |
 | **檢查關卡** | 該階段成品 + 原始對照來源 | 檢查員自己動手改內容 | 球員不能兼裁判 |
 
-這張表的重點是：**每個節點的「不能做」和「能做」一樣重要**。權限不是為了限制 AI 的能力，而是為了讓錯誤可以被定位。
+這張表的重點是：**每個節點的「不能做」和「能做」一樣重要**。權限劃清楚，出錯時才找得到是哪個節點的問題。
 
 ## Gate：把關卡放在副作用發生處
 
